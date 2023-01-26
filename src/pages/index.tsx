@@ -1,34 +1,7 @@
 import Head from "next/head";
-import styles from "@/styles/Home.module.css";
-import { initFirebase } from "firebaseConfig";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { Spinner } from "@chakra-ui/react";
-import { useRouter } from "next/router";
+import SignIn from "./auth/SignIn";
 
 export default function Home() {
-  initFirebase();
-  const provider = new GoogleAuthProvider();
-  const auth = getAuth();
-  // Tracks the auth state of the use. Only triggered when user signs in or out
-  const [user, loading] = useAuthState(auth);
-  const router = useRouter();
-
-  if (loading) {
-    return <Spinner color="purple.500" />;
-  }
-
-  if (user) {
-    // Redirects user to this component
-    router.push("/welcomeScreen");
-    return <div>Welcome, {user.displayName}</div>;
-  }
-
-  const signIn = async () => {
-    const result = await signInWithPopup(auth, provider);
-    console.log(result.user);
-  };
-
   return (
     <>
       <Head>
@@ -37,11 +10,8 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>Welcome!</p>
-          <button onClick={signIn}>Sign in</button>
-        </div>
+      <main>
+        <SignIn />
       </main>
     </>
   );
