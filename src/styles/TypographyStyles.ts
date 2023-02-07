@@ -11,11 +11,16 @@ const TypographyStyles = createGlobalStyle`
         scroll-behavior: smooth;
     }
 
+    h1 {
+        color: var(--primaryText);
+        font-size: 40px;
+        font-weight: 600;
+    }
+
     h2 {
         color: var(--primaryText);
         font-size: 36px;
-        font-weight: 600;
-        margin-top: 30px;
+        font-weight: 500;
     }
 `;
 

@@ -18,6 +18,12 @@ const Contanier = styled.section`
     width: 100%;
     height: 200px;
   }
+  h1 {
+    margin-bottom: 30px;
+  }
+  h2 {
+    margin-top: 30px;
+  }
 `;
 
 const InternalContent = styled.div`
@@ -63,6 +69,7 @@ const SignIn = () => {
   return (
     <>
       <Contanier>
+        <h1>The Clubhouse</h1>
         <Image
           src={bunkerImg}
           alt="Bunker on a golf course"
