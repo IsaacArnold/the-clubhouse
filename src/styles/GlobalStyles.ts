@@ -10,6 +10,7 @@ const GlobalStyles = createGlobalStyle`
         --primaryGreen: #4B9D6F;
         --primaryText: #373B40;
         --lightenedGray: rgba(55, 59, 64, 0.57);
+        --lightenedGreen: rgba(75,157,111,0.32);
     }
 
     * {

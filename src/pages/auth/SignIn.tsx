@@ -26,11 +26,16 @@ const InternalContent = styled.div`
   margin: 0 10px;
 `;
 
-const Heading = styled.h1`
-  color: var(--primaryText);
-  font-size: 36px;
-  font-weight: 600;
-  margin-top: 30px;
+const RegisterCTA = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+  margin-top: 50px;
+`;
+
+const Button = styled.button`
+  color: var(--primaryGreen);
+  font-weight: 700;
 `;
 //#endregion
 
@@ -51,11 +56,10 @@ const SignIn = () => {
     router.push("/welcomeScreen");
   }
 
-  const signInGoogle = async () => {
+  const registerGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     console.log(result.user);
   };
-
   return (
     <>
       <Contanier>
@@ -65,8 +69,12 @@ const SignIn = () => {
           className="mainImg"
         />
         <InternalContent>
-          <Heading>Login</Heading>
+          <h2>Login</h2>
           <GoogleBtn />
+          <RegisterCTA>
+            <p>New to The Clubhouse?</p>
+            <Button onClick={registerGoogle}>Register</Button>
+          </RegisterCTA>
         </InternalContent>
         {/* <button onClick={signInGoogle}>Sign-in with Google</button> */}
       </Contanier>
