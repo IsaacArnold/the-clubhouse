@@ -4,6 +4,7 @@ import router from "next/router";
 import Link from "next/link";
 import { useAuthState } from "react-firebase-hooks/auth";
 import styled from "styled-components";
+import { initFirebase } from "firebaseConfig";
 
 //#region --- Page styles ---
 const Contanier = styled.section`
@@ -38,6 +39,7 @@ const SignoutDiv = styled.div`
 //#endregion
 
 const WelcomeScreen = () => {
+  initFirebase();
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
 
@@ -69,6 +71,7 @@ const WelcomeScreen = () => {
           <button>
             <Link href="/scorecard/Scorecard">Start a round</Link>
           </button>
+          <button onClick={signOut}>Sign out</button>
         </InternalContent>
       </Contanier>
     </>
