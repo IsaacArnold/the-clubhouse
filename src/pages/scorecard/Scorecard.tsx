@@ -51,6 +51,9 @@ const ResultsDiv = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  h3 {
+    margin-top: 20px;
+  }
 `;
 
 const IndividualResult = styled.div`
@@ -59,6 +62,8 @@ const IndividualResult = styled.div`
   justify-content: space-between;
   align-items: center;
   background-color: var(--primaryGray);
+  padding: 10px 20px;
+  border-radius: 25px;
 `;
 //#endregion
 
@@ -76,6 +81,8 @@ const Scorecard = () => {
         // Adds the data for each hole to the array, plus adds the document ID
         data.push({ ...doc.data(), id: doc.id });
       });
+      // Sorts the holeNumbers in ascending order
+      data.sort((a, b) => a.holeNumber - b.holeNumber);
       setHoleScores(data);
     };
     getData();
@@ -93,6 +100,7 @@ const Scorecard = () => {
           <ScoreForm setUpdateTrigger={setUpdateTriggerCallback} />
         </ScoreDiv>
         <ResultsDiv>
+          <h3>Your Results</h3>
           {holeScores.map((score) => (
             <IndividualResult key={score.id}>
               <p>Hole #: {score.holeNumber}</p>

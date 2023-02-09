@@ -22,6 +22,11 @@ const TypographyStyles = createGlobalStyle`
         font-size: 36px;
         font-weight: 500;
     }
+
+    h3 {
+        font-size: 24px;
+        font-weight: 400;
+    }
 `;
 
 export default TypographyStyles;
