@@ -74,6 +74,7 @@ const SignIn = () => {
           src={bunkerImg}
           alt="Bunker on a golf course"
           className="mainImg"
+          priority
         />
         <InternalContent>
           <h2>Login</h2>

@@ -1,0 +1,21 @@
+{
+    "courses": [
+        {
+            "courseName": "Wynnum Golf Club",
+            "Par": 70,
+            "Holes": 18,
+            "holeDetails": [
+                {
+                    "1": {
+                        "par": 4
+                    }
+                },
+                {
+                    "2" : {
+                        "par": 5
+                    }
+                }
+            ]
+        }
+    ]
+}
