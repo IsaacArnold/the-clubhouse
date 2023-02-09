@@ -2,6 +2,21 @@ import { Input } from "@chakra-ui/react";
 import { addDoc, collection } from "firebase/firestore";
 import { database } from "firebaseConfig";
 import { useState } from "react";
+import styled from "styled-components";
+
+//#region --- Page styles ---
+const Contanier = styled.section`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+`;
+
+const Button = styled.button`
+  color: var(--primaryGreen);
+  font-weight: 700;
+  text-align: left;
+`;
+//#endregion
 
 interface ScoreFormProps {
   setUpdateTrigger: () => void;
@@ -9,9 +24,9 @@ interface ScoreFormProps {
 
 const ScoreForm = (props: ScoreFormProps) => {
   const [holeScore, setHoleScore] = useState({
-    holeNumber: 0,
-    holePar: 0,
-    holeScore: 0,
+    holeNumber: "",
+    holePar: "",
+    holeScore: "",
   });
 
   const onSubmit = async () => {
@@ -22,43 +37,56 @@ const ScoreForm = (props: ScoreFormProps) => {
       "holeScores"
     );
     const docRef = await addDoc(collectionRef, { ...holeScore });
+    // Resets the input fields
     setHoleScore({
-      holeNumber: 0,
-      holePar: 0,
-      holeScore: 0,
+      holeNumber: "",
+      holePar: "",
+      holeScore: "",
     });
     props.setUpdateTrigger();
     alert(`Golf score added successfully with this id: ${docRef.id}`);
   };
 
   return (
-    <div>
+    <Contanier>
+      <label id="holeNum">Hole Number</label>
       <Input
+        mb={4}
+        focusBorderColor="#4B9D6F"
+        id="holeNum"
         type="number"
-        placeholder="Hole number"
+        placeholder="1"
         value={holeScore.holeNumber}
         onChange={(e) =>
-          setHoleScore({ ...holeScore, holeNumber: parseInt(e.target.value) })
+          setHoleScore({ ...holeScore, holeNumber: e.target.value })
         }
       />
+      <label id="holePar">Hole Par</label>
       <Input
+        mb={4}
+        focusBorderColor="#4B9D6F"
+        id="holePar"
         type="number"
-        placeholder="Hole par"
+        placeholder="4"
         value={holeScore.holePar}
         onChange={(e) =>
-          setHoleScore({ ...holeScore, holePar: parseInt(e.target.value) })
+          setHoleScore({ ...holeScore, holePar: e.target.value })
         }
       />
+      <label id="yourScore">Your score</label>
       <Input
+        mb={4}
+        focusBorderColor="#4B9D6F"
+        id="yourScore"
         type="number"
-        placeholder="Your score"
+        placeholder="5"
         value={holeScore.holeScore}
         onChange={(e) =>
-          setHoleScore({ ...holeScore, holeScore: parseInt(e.target.value) })
+          setHoleScore({ ...holeScore, holeScore: e.target.value })
         }
       />
-      <button onClick={onSubmit}>Submit score</button>
-    </div>
+      <Button onClick={onSubmit}>Submit score</Button>
+    </Contanier>
   );
 };
 

@@ -46,13 +46,21 @@ const InternalContent = styled.div`
 const ScoreDiv = styled.div`
   display: flex;
 `;
-//#endregion
 
-type HoleScore = {
-  holePar: number;
-  holeScore: number;
-  holeNumber: number;
-};
+const ResultsDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const IndividualResult = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--primaryGray);
+`;
+//#endregion
 
 const Scorecard = () => {
   const [holeScores, setHoleScores] = useState<DocumentData[]>([]);
@@ -84,15 +92,15 @@ const Scorecard = () => {
         <ScoreDiv>
           <ScoreForm setUpdateTrigger={setUpdateTriggerCallback} />
         </ScoreDiv>
-        <div>
+        <ResultsDiv>
           {holeScores.map((score) => (
-            <div key={score.id}>
+            <IndividualResult key={score.id}>
               <p>Hole #: {score.holeNumber}</p>
               <p>Par: {score.holePar}</p>
               <p>Your score: {score.holeScore}</p>
-            </div>
+            </IndividualResult>
           ))}
-        </div>
+        </ResultsDiv>
       </InternalContent>
     </Contanier>
   );
