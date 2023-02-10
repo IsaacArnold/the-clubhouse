@@ -3,10 +3,21 @@ import Image from "next/image";
 import googleLogo from "../../images/icons/googleIcon.png";
 import { Spinner } from "@chakra-ui/react";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-import { initFirebase } from "firebaseConfig";
+import { database, initFirebase } from "firebaseConfig";
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import { useEffect } from "react";
 
+//#region --- Page styles ---
 const Button = styled.button`
   background-color: var(--lightenedGreen);
   color: var(--primaryText);
@@ -22,6 +33,7 @@ const Button = styled.button`
     margin-right: 40px;
   }
 `;
+//#endregion
 
 const GoogleIcon = () => {
   return <Image src={googleLogo} alt="Google logo" className="logo" />;
@@ -35,6 +47,35 @@ const GoogleBtn = () => {
   const [user, loading] = useAuthState(auth);
   const router = useRouter();
 
+  useEffect(() => {
+    if (user) {
+      generateNewUserOnDB();
+    }
+  }, [user]);
+
+  const generateNewUserOnDB = async () => {
+    const collectionRef = collection(database, "users");
+    console.log("collectionRef: ", collectionRef);
+
+    const q = query(collectionRef, where("id", "==", user?.uid));
+    const snapshot = await getDocs(q);
+    let golfUser = null;
+
+    if (snapshot.empty) {
+      console.log("Doc doesn't exist");
+      golfUser = {
+        id: user?.uid,
+        name: user?.displayName,
+        email: user?.email,
+        // Extra properties you want here
+      };
+      // Document doesn't exist, so we are going to add it
+      await addDoc(collectionRef, golfUser);
+    } else {
+      golfUser = snapshot.docs[0].data();
+    }
+  };
+
   if (loading) {
     return <Spinner color="purple.500" />;
   }
@@ -46,7 +87,7 @@ const GoogleBtn = () => {
 
   const signInGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
-    console.log(result.user);
+    // console.log(result.user);
   };
   return (
     <Button onClick={signInGoogle}>

@@ -1,7 +1,8 @@
 import GoogleBtn from "@/components/buttons/GoogleBtn";
 import { Spinner } from "@chakra-ui/react";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-import { initFirebase } from "firebaseConfig";
+import { addDoc, collection, doc } from "firebase/firestore";
+import { database, initFirebase } from "firebaseConfig";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
