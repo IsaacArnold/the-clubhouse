@@ -6,7 +6,7 @@ const TypographyStyles = createGlobalStyle`
     }
 
     * {
-        font-family: "Poppins", "serif";
+        font-family: "Poppins", sans-serif;
         box-sizing: border-box;
         scroll-behavior: smooth;
     }
