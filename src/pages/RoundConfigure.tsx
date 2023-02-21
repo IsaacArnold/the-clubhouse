@@ -4,7 +4,10 @@ import router from "next/router";
 import Link from "next/link";
 import { useAuthState } from "react-firebase-hooks/auth";
 import styled from "styled-components";
-import { initFirebase } from "firebaseConfig";
+import { initFirebase, database } from "firebaseConfig";
+import { collection, getDocs, query, DocumentData } from "firebase/firestore";
+import { useEffect, useState, SetStateAction } from "react";
+import RoundName from "@/components/inputs/roundName";
 
 //#region --- Page styles ---
 const Contanier = styled.section`
@@ -38,10 +41,26 @@ const SignoutDiv = styled.div`
 `;
 //#endregion
 
-const WelcomeScreen = () => {
+const RoundConfigure = () => {
+  const [courseNames, setCourseNames] = useState<DocumentData[]>([]);
   initFirebase();
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
+
+  useEffect(() => {
+    const golfCourses = query(collection(database, "courses"));
+    const getGolfCourses = async () => {
+      const snapShot = await getDocs(golfCourses);
+      const data: SetStateAction<DocumentData[]> = [];
+      snapShot.forEach((doc) => {
+        data.push({ ...doc.data() });
+      });
+      setCourseNames(data);
+    };
+    getGolfCourses();
+  }, []);
+
+  console.log(courseNames);
 
   if (loading) {
     return <Spinner color="blue.500" />;
@@ -58,24 +77,27 @@ const WelcomeScreen = () => {
     );
   }
 
-  const signOut = async () => {
-    return auth.signOut();
-  };
+  /*
+  To configure the round we would create a document under Rounds with the user inputted roundID. We would then fill out the fields in that doc with the courseID, based on the selected course and the date
+  */
 
   return (
     <>
       <Contanier>
-        <h1>The Clubhouse</h1>
+        <h1>Round Details</h1>
         <InternalContent>
-          <h2>Hello, {user?.displayName}</h2>
+          <h3>Choose a course</h3>
+          {courseNames.map((course) => (
+            <p key={course.courseID}>{course.courseName}</p>
+          ))}
+          <RoundName />
           <button>
-            <Link href="/RoundConfigure">Start a round</Link>
+            <Link href="/scorecard/Scorecard">Start</Link>
           </button>
-          <button onClick={signOut}>Sign out</button>
         </InternalContent>
       </Contanier>
     </>
   );
 };
 
-export default WelcomeScreen;
+export default RoundConfigure;
