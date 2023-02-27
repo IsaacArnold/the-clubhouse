@@ -90,7 +90,7 @@ const Scorecard = () => {
 
   const setUpdateTriggerCallback = () => setUpdateTrigger(updateTrigger + 1);
 
-  console.log(holeScores);
+  // console.log(holeScores);
 
   return (
     <Contanier>

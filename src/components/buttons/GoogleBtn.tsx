@@ -55,7 +55,6 @@ const GoogleBtn = () => {
 
   const generateNewUserOnDB = async () => {
     const collectionRef = collection(database, "users");
-    console.log("collectionRef: ", collectionRef);
 
     const q = query(collectionRef, where("id", "==", user?.uid));
     const snapshot = await getDocs(q);
@@ -72,6 +71,7 @@ const GoogleBtn = () => {
       // Document doesn't exist, so we are going to add it
       await addDoc(collectionRef, golfUser);
     } else {
+      console.log("Doc does exist");
       golfUser = snapshot.docs[0].data();
     }
   };

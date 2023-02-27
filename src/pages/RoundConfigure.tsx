@@ -1,4 +1,4 @@
-import { getAuth } from "firebase/auth";
+import { getAuth, User } from "firebase/auth";
 import { Spinner, Input, Select } from "@chakra-ui/react";
 import router from "next/router";
 import Link from "next/link";
@@ -11,7 +11,6 @@ import {
   query,
   DocumentData,
   addDoc,
-  where,
 } from "firebase/firestore";
 import { useEffect, useState, SetStateAction } from "react";
 import moment from "moment";
@@ -57,9 +56,8 @@ const Button = styled.button`
 const RoundConfigure = () => {
   const [courseNames, setCourseNames] = useState<DocumentData[]>([]);
   const [roundName, setRoundName] = useState("");
-  const [courseID, setCourseID] = useState("");
-  const [roundDate, setRoundDate] = useState("");
-  const [userID, setUserID] = useState("");
+  const [courseID, setCourseID] = useState<String>("");
+  const [roundDate, setRoundDate] = useState<String>("");
 
   initFirebase();
   const auth = getAuth();
@@ -67,14 +65,6 @@ const RoundConfigure = () => {
 
   useEffect(() => {
     setRoundDate(moment().format("dddd, MMMM D, YYYY"));
-
-    const getDBUserID = async () => {
-      const userRef = collection(database, "users");
-      const q = query(userRef, where("id", "==", user?.uid));
-      const snapshot = await getDocs(q);
-      const internalUserID = snapshot.docs[0].data().id;
-      setUserID(internalUserID);
-    };
 
     const getGolfCourses = async () => {
       const golfCourses = query(collection(database, "courses"));
@@ -86,7 +76,6 @@ const RoundConfigure = () => {
       setCourseNames(data);
     };
 
-    getDBUserID();
     getGolfCourses();
   }, []);
 
@@ -111,7 +100,7 @@ const RoundConfigure = () => {
       roundName,
       courseID: courseID,
       roundDate: roundDate,
-      userID: userID,
+      userID: user.uid,
     });
     // Resets the input fields
     setRoundName("");
