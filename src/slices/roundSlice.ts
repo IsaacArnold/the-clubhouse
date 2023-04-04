@@ -1,12 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "@/store/store";
-
-interface GolfRound {
-  courseID: string;
-  roundDate: string;
-  roundName: string;
-  userID: string;
-}
+import { GolfRound } from "@/types/golfRoundTypes";
 
 const initialState: GolfRound = {
   courseID: "",
