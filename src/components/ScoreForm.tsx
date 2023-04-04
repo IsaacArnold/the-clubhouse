@@ -30,13 +30,24 @@ const ScoreForm = (props: ScoreFormProps) => {
   });
 
   const onSubmit = async () => {
-    const collectionRef = collection(
-      database,
-      "golf_scores",
-      "Wynnum",
-      "holeScores"
-    );
-    const docRef = await addDoc(collectionRef, { ...holeScore });
+    // TODO:
+    /*
+      1. We want to Get the currentRoundID and create a 'scores' subcollection
+      2. After that is done, we create the first doc in the 'scores' collection with the information entered by the user.
+      It would look something like this:
+
+        // Gets the doc of the round the user just created.
+        const currentRoundDocRef = doc(database, "rounds", newRoundDocRef.id);
+        // NOTE: We may need to store the newRoundDocRef as a global variable such as currentRoundID...
+        // Assigns a new subcollection called 'scores' to the round we just created.
+        const roundScoreSubCollectionRef = collection(currentRoundDocRef, "scores");
+        await addDoc(roundScoreSubCollectionRef, {
+          holeNumber: "",
+          scoreValue: "",
+          putts: "",
+          fairwayHit: true,
+        });
+    */
     // Resets the input fields
     setHoleScore({
       holeNumber: "",
@@ -44,7 +55,6 @@ const ScoreForm = (props: ScoreFormProps) => {
       holeScore: "",
     });
     props.setUpdateTrigger();
-    alert(`Golf score added successfully with this id: ${docRef.id}`);
   };
 
   return (

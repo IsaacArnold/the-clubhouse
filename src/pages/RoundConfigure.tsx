@@ -11,6 +11,8 @@ import {
   query,
   DocumentData,
   addDoc,
+  doc,
+  getDoc,
 } from "firebase/firestore";
 import { useEffect, useState, SetStateAction } from "react";
 import moment from "moment";
@@ -96,21 +98,21 @@ const RoundConfigure = () => {
 
   const onRoundConfigSubmit = async () => {
     const collectionRef = collection(database, "rounds");
-    const docRef = await addDoc(collectionRef, {
+    // Adds a doc to the rounds collection
+    const newRoundDocRef = await addDoc(collectionRef, {
       roundName,
       courseID: courseID,
       roundDate: roundDate,
       userID: user.uid,
     });
+
     // Resets the input fields
     setRoundName("");
   };
 
-  /*
-  To configure the round we would create a document under Rounds with the user specified roundID. We would then fill out the fields in that doc with the courseID, based on the selected course and the date.
-
-  To assign the round to a specific user, we assign the Auth userID to the userID in the Firestore doc.
-  */
+  const signOut = async () => {
+    return auth.signOut();
+  };
 
   return (
     <>
@@ -146,6 +148,7 @@ const RoundConfigure = () => {
           <button onClick={onRoundConfigSubmit}>
             <Link href="/scorecard/Scorecard">Start</Link>
           </button>
+          <button onClick={signOut}>Sign out</button>
         </InternalContent>
       </Contanier>
     </>
