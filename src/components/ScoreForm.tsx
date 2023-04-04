@@ -1,3 +1,4 @@
+import { useAppSelector } from "@/hooks/hooks";
 import { Input } from "@chakra-ui/react";
 import { addDoc, collection } from "firebase/firestore";
 import { database } from "firebaseConfig";
@@ -28,6 +29,12 @@ const ScoreForm = (props: ScoreFormProps) => {
     holePar: "",
     holeScore: "",
   });
+
+  const currentRoundID: string = useAppSelector(
+    (state) => state.updateRound.roundName
+  );
+
+  console.log("State: ", currentRoundID);
 
   const onSubmit = async () => {
     // TODO:

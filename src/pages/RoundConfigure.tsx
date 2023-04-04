@@ -16,6 +16,8 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState, SetStateAction } from "react";
 import moment from "moment";
+import { useAppSelector, useAppDispatch } from "../hooks/hooks";
+import { updateRound } from "@/slices/roundSlice";
 
 //#region --- Page styles ---
 const Contanier = styled.section`
@@ -60,6 +62,7 @@ const RoundConfigure = () => {
   const [roundName, setRoundName] = useState("");
   const [courseID, setCourseID] = useState<String>("");
   const [roundDate, setRoundDate] = useState<String>("");
+  const dispatch = useAppDispatch();
 
   initFirebase();
   const auth = getAuth();
@@ -105,7 +108,11 @@ const RoundConfigure = () => {
       roundDate: roundDate,
       userID: user.uid,
     });
+    const currentRoundDocRef = getDoc(newRoundDocRef);
+    const currentRoundDetails: any = await currentRoundDocRef;
+    console.log((await currentRoundDocRef).data());
 
+    dispatch(updateRound(currentRoundDetails.data()));
     // Resets the input fields
     setRoundName("");
   };
