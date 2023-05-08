@@ -31,7 +31,7 @@ const ScoreForm = (props: ScoreFormProps) => {
   });
 
   const currentRoundID: string = useAppSelector(
-    (state) => state.updateRound.roundName
+    (state) => state.updateRound.roundID
   );
 
   console.log("State: ", currentRoundID);
@@ -39,7 +39,7 @@ const ScoreForm = (props: ScoreFormProps) => {
   const onSubmit = async () => {
     // TODO:
     /*
-      1. We want to Get the currentRoundID and create a 'scores' subcollection
+      1. We want to Get the currentRoundID and create a 'scores' subcollection in the over-arching round.
       2. After that is done, we create the first doc in the 'scores' collection with the information entered by the user.
       It would look something like this:
 

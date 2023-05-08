@@ -18,6 +18,7 @@ import { useEffect, useState, SetStateAction } from "react";
 import moment from "moment";
 import { useAppSelector, useAppDispatch } from "../hooks/hooks";
 import { updateRound } from "@/slices/roundSlice";
+import { v4 as uuidv4 } from "uuid";
 
 //#region --- Page styles ---
 const Contanier = styled.section`
@@ -107,6 +108,7 @@ const RoundConfigure = () => {
       courseID: courseID,
       roundDate: roundDate,
       userID: user.uid,
+      roundID: uuidv4(),
     });
     const currentRoundDocRef = getDoc(newRoundDocRef);
     const currentRoundDetails: any = await currentRoundDocRef;
