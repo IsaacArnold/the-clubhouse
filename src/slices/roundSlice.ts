@@ -5,6 +5,7 @@ const initialState: GolfRound = {
   courseID: "",
   roundDate: "",
   roundName: "",
+  roundID: 0,
   userID: "",
 };
 

@@ -30,7 +30,7 @@ const ScoreForm = (props: ScoreFormProps) => {
     holeScore: "",
   });
 
-  const currentRoundID: string = useAppSelector(
+  const currentRoundID: number = useAppSelector(
     (state) => state.updateRound.roundID
   );
 
