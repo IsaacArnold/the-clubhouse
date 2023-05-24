@@ -1,10 +1,10 @@
-import { getAuth } from "firebase/auth";
 import { Spinner } from "@chakra-ui/react";
-import router from "next/router";
+import { getAuth } from "firebase/auth";
+import { initFirebase } from "firebaseConfig";
 import Link from "next/link";
+import router from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import styled from "styled-components";
-import { initFirebase } from "firebaseConfig";
 
 //#region --- Page styles ---
 const Contanier = styled.section`
@@ -68,6 +68,9 @@ const WelcomeScreen = () => {
         <h1>The Clubhouse</h1>
         <InternalContent>
           <h2>Hello, {user?.displayName}</h2>
+          <button>
+            <Link href="/myRounds/MyRounds">View My Rounds</Link>
+          </button>
           <button>
             <Link href="/RoundConfigure">Start a round</Link>
           </button>

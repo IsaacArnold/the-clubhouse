@@ -1,24 +1,23 @@
-import { getAuth, User } from "firebase/auth";
-import { Spinner, Input, Select } from "@chakra-ui/react";
-import router from "next/router";
-import Link from "next/link";
-import { useAuthState } from "react-firebase-hooks/auth";
-import styled from "styled-components";
-import { initFirebase, database } from "firebaseConfig";
+import { useCurrentRoundStore } from "@/store/store";
+import { Input, Select, Spinner } from "@chakra-ui/react";
+import { User, getAuth } from "firebase/auth";
 import {
-  collection,
-  getDocs,
-  query,
   DocumentData,
   addDoc,
+  collection,
   doc,
   getDoc,
+  getDocs,
+  query,
 } from "firebase/firestore";
-import { useEffect, useState, SetStateAction } from "react";
+import { database, initFirebase } from "firebaseConfig";
 import moment from "moment";
-import { updateRound } from "@/slices/roundSlice";
+import Link from "next/link";
+import router from "next/router";
+import { SetStateAction, useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
-import { useCurrentRoundStore } from "@/store/store";
 
 //#region --- Page styles ---
 const Contanier = styled.section`
@@ -158,6 +157,9 @@ const RoundConfigure = () => {
 
           <button onClick={onRoundConfigSubmit}>
             <Link href="/scorecard/Scorecard">Start</Link>
+          </button>
+          <button>
+            <Link href="/myRounds/MyRounds"> View My Rounds</Link>
           </button>
           <button onClick={signOut}>Sign out</button>
         </InternalContent>
