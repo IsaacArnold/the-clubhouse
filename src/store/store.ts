@@ -1,13 +1,25 @@
-import { configureStore } from "@reduxjs/toolkit";
-import updateRoundReducer from "../slices/roundSlice";
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
-export const store = configureStore({
-  reducer: {
-    updateRound: updateRoundReducer,
-  },
-});
+interface CurrentRoundID {
+  currentRoundID: number;
+  updateRoundID: (selectedRoundID: number) => void;
+}
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = typeof store.dispatch;
+export const useCurrentRoundStore = create<CurrentRoundID>()(
+  persist(
+    (set) => ({
+      currentRoundID: 0,
+      updateRoundID: (selectedRoundID) => {
+        console.log("Updating round ID: ", selectedRoundID);
+        set((state) => ({
+          currentRoundID: (state.currentRoundID = selectedRoundID),
+        }));
+      },
+    }),
+    {
+      name: "currentRoundStore",
+      storage: createJSONStorage(() => sessionStorage),
+    }
+  )
+);

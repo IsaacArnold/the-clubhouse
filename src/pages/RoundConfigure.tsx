@@ -16,9 +16,9 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState, SetStateAction } from "react";
 import moment from "moment";
-import { useAppSelector, useAppDispatch } from "../hooks/hooks";
 import { updateRound } from "@/slices/roundSlice";
 import { v4 as uuidv4 } from "uuid";
+import { useCurrentRoundStore } from "@/store/store";
 
 //#region --- Page styles ---
 const Contanier = styled.section`
@@ -63,7 +63,7 @@ const RoundConfigure = () => {
   const [roundName, setRoundName] = useState("");
   const [courseID, setCourseID] = useState<String>("");
   const [roundDate, setRoundDate] = useState<String>("");
-  const dispatch = useAppDispatch();
+  const { updateRoundID } = useCurrentRoundStore();
 
   initFirebase();
   const auth = getAuth();
@@ -85,6 +85,7 @@ const RoundConfigure = () => {
     getGolfCourses();
   }, []);
 
+  //#region --- User stuff ---
   if (loading) {
     return <Spinner color="blue.500" />;
   }
@@ -99,6 +100,7 @@ const RoundConfigure = () => {
       </SignoutDiv>
     );
   }
+  //#endregion
 
   const onRoundConfigSubmit = async () => {
     const collectionRef = collection(database, "rounds");
@@ -112,9 +114,9 @@ const RoundConfigure = () => {
     });
     const currentRoundDocRef = getDoc(newRoundDocRef);
     const currentRoundDetails: any = await currentRoundDocRef;
-    console.log((await currentRoundDocRef).data());
 
-    dispatch(updateRound(currentRoundDetails.data()));
+    updateRoundID(currentRoundDetails.data().roundID);
+
     // Resets the input fields
     setRoundName("");
   };

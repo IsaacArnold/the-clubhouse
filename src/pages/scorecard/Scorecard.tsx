@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import ScoreForm from "@/components/ScoreForm";
 import { SetStateAction, useEffect, useState } from "react";
+import { useCurrentRoundStore } from "@/store/store";
 
 //#region --- Page styles ---
 const Contanier = styled.section`
@@ -70,6 +71,12 @@ const IndividualResult = styled.div`
 const Scorecard = () => {
   const [holeScores, setHoleScores] = useState<DocumentData[]>([]);
   const [updateTrigger, setUpdateTrigger] = useState(0);
+  const currentRoundID = useCurrentRoundStore((state) => state.currentRoundID);
+
+  useEffect(() => {
+    console.log("currentRoundID updated:", currentRoundID);
+  }, [currentRoundID]);
+
   useEffect(() => {
     const q = query(
       collection(database, "golf_scores", "Wynnum", "holeScores")

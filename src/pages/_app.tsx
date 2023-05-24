@@ -4,7 +4,6 @@ import GlobalStyles from "@/styles/GlobalStyles";
 import TypographyStyles from "@/styles/TypographyStyles";
 import styled from "styled-components";
 import { Provider } from "react-redux";
-import { store } from "../store/store";
 
 const LayoutContainer = styled.main`
   display: flex;
@@ -14,14 +13,12 @@ const LayoutContainer = styled.main`
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Provider store={store}>
-      <ChakraProvider>
-        <GlobalStyles />
-        <TypographyStyles />
-        <LayoutContainer>
-          <Component {...pageProps} />
-        </LayoutContainer>
-      </ChakraProvider>
-    </Provider>
+    <ChakraProvider>
+      <GlobalStyles />
+      <TypographyStyles />
+      <LayoutContainer>
+        <Component {...pageProps} />
+      </LayoutContainer>
+    </ChakraProvider>
   );
 }

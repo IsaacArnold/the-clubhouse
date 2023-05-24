@@ -30,11 +30,9 @@ const ScoreForm = (props: ScoreFormProps) => {
     holeScore: "",
   });
 
-  const currentRoundID: number = useAppSelector(
-    (state) => state.updateRound.roundID
-  );
-
-  console.log("State: ", currentRoundID);
+  // const currentRoundID: number = useAppSelector(
+  //   (state) => state.updateRound.roundID
+  // );
 
   const onSubmit = async () => {
     // TODO:
