@@ -73,7 +73,7 @@ const RoundConfigure = () => {
   const [user, loading] = useAuthState(auth);
 
   useEffect(() => {
-    setRoundDate(moment().format("dddd, MMMM D, YYYY"));
+    setRoundDate(moment().format("DD/MM/YYYY"));
 
     const getGolfCourses = async () => {
       const golfCourses = query(collection(database, "courses"));
@@ -176,6 +176,7 @@ const RoundConfigure = () => {
               placeholder="wynnum0502"
               value={roundName}
               onChange={(e) => setRoundName(e.target.value)}
+              required={true}
             />
           </Contanier>
 

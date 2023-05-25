@@ -1,4 +1,4 @@
-import { Input } from "@chakra-ui/react";
+import { Input, Link } from "@chakra-ui/react";
 import { addDoc, collection } from "firebase/firestore";
 import { database } from "firebaseConfig";
 import { useState } from "react";
@@ -100,6 +100,9 @@ const ScoreForm = (props: ScoreFormProps) => {
         }
       />
       <Button onClick={onSubmit}>Submit score</Button>
+      <button>
+        <Link href="/myRounds/MyRounds"> View My Rounds</Link>
+      </button>
     </Contanier>
   );
 };
