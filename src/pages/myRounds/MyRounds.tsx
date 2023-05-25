@@ -34,7 +34,6 @@ const Contanier = styled.section`
 const InternalContent = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 0 10px;
 `;
 //#endregion
 
@@ -72,9 +71,11 @@ const MyRounds = () => {
       <InternalContent>
         {myRounds.map((round) => (
           <div key={round.roundID} className={styles.roundContainer}>
-            <p>{round.roundName}</p>
-            <p>{round.roundDate}</p>
-            <p>{round.courseName}</p>
+            <div className={styles.roundDetailsTop}>
+              <p>{round.roundName}</p>
+              <p>{round.roundDate}</p>
+            </div>
+            <i className={styles.roundDetailsBottom}>{round.courseName}</i>
           </div>
         ))}
       </InternalContent>
