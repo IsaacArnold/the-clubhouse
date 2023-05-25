@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import styled from "styled-components";
+
 import bunkerImg from "../../images/bunker.jpg";
 
 //#region --- Page styles ---

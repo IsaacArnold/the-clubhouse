@@ -1,4 +1,7 @@
-import { useCurrentRoundStore } from "@/store/store";
+import {
+  useCurrentRoundStore,
+  useSelectedCourseNameStore,
+} from "@/store/store";
 import { Input, Select, Spinner } from "@chakra-ui/react";
 import { User, getAuth } from "firebase/auth";
 import {
@@ -14,7 +17,7 @@ import { database, initFirebase } from "firebaseConfig";
 import moment from "moment";
 import Link from "next/link";
 import router from "next/router";
-import { SetStateAction, useEffect, useState } from "react";
+import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
@@ -59,6 +62,7 @@ const Button = styled.button`
 
 const RoundConfigure = () => {
   const [courseNames, setCourseNames] = useState<DocumentData[]>([]);
+  const [selectedCourseName, setSelectedCourseName] = useState<String>("");
   const [roundName, setRoundName] = useState("");
   const [courseID, setCourseID] = useState<String>("");
   const [roundDate, setRoundDate] = useState<String>("");
@@ -107,6 +111,7 @@ const RoundConfigure = () => {
     const newRoundDocRef = await addDoc(collectionRef, {
       roundName,
       courseID: courseID,
+      courseName: selectedCourseName,
       roundDate: roundDate,
       userID: user.uid,
       roundID: uuidv4(),
@@ -114,6 +119,7 @@ const RoundConfigure = () => {
     const currentRoundDocRef = getDoc(newRoundDocRef);
     const currentRoundDetails: any = await currentRoundDocRef;
 
+    // Adds the roundID to the store so we can write scores to a specific round
     updateRoundID(currentRoundDetails.data().roundID);
 
     // Resets the input fields
@@ -122,6 +128,22 @@ const RoundConfigure = () => {
 
   const signOut = async () => {
     return auth.signOut();
+  };
+
+  const getAndSetSelectedCourseNameAndID = (
+    element: ChangeEvent<HTMLSelectElement>
+  ) => {
+    // Sets the courseID so we can add it to the round document in DB.
+    setCourseID(element.target.value);
+
+    /*  
+      Finds the repsective courseName based off the selected option and stores it in localState which then adds it to the round document. This is so we can read it in the My Rounds component.
+    */
+    const selectedCourse = courseNames.find(
+      (course) => course.courseID === element.target.value
+    );
+    const selectedCourseName = selectedCourse?.courseName;
+    setSelectedCourseName(selectedCourseName);
   };
 
   return (
@@ -133,7 +155,9 @@ const RoundConfigure = () => {
           <Select
             placeholder="Select course"
             isRequired={true}
-            onChange={(e) => setCourseID(e.target.value)}
+            onChange={(e) => {
+              getAndSetSelectedCourseNameAndID(e);
+            }}
           >
             {courseNames.map((course) => (
               <option value={course.courseID} key={course.courseID}>

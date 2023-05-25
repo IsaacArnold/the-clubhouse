@@ -74,6 +74,7 @@ const MyRounds = () => {
           <div key={round.roundID} className={styles.roundContainer}>
             <p>{round.roundName}</p>
             <p>{round.roundDate}</p>
+            <p>{round.courseName}</p>
           </div>
         ))}
       </InternalContent>

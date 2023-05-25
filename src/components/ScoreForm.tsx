@@ -1,4 +1,3 @@
-import { useAppSelector } from "@/hooks/hooks";
 import { Input } from "@chakra-ui/react";
 import { addDoc, collection } from "firebase/firestore";
 import { database } from "firebaseConfig";

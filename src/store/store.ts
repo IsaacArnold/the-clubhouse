@@ -1,9 +1,14 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface CurrentRoundID {
   currentRoundID: number;
   updateRoundID: (selectedRoundID: number) => void;
+}
+
+interface SelectedCourseName {
+  selectedCourseName: string;
+  updateSelectedCourseName: (selectedCourse: string) => void;
 }
 
 export const useCurrentRoundStore = create<CurrentRoundID>()(
@@ -19,6 +24,24 @@ export const useCurrentRoundStore = create<CurrentRoundID>()(
     }),
     {
       name: "currentRoundStore",
+      storage: createJSONStorage(() => sessionStorage),
+    }
+  )
+);
+
+export const useSelectedCourseNameStore = create<SelectedCourseName>()(
+  persist(
+    (set) => ({
+      selectedCourseName: "",
+      updateSelectedCourseName: (selectedCourse) => {
+        console.log("Updating selected courseName: ", selectedCourse);
+        set((state) => ({
+          selectedCourseName: (state.selectedCourseName = selectedCourse),
+        }));
+      },
+    }),
+    {
+      name: "selectedCourseNameStore",
       storage: createJSONStorage(() => sessionStorage),
     }
   )

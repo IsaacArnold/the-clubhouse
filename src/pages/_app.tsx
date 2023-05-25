@@ -1,9 +1,8 @@
-import type { AppProps } from "next/app";
-import { ChakraProvider } from "@chakra-ui/react";
 import GlobalStyles from "@/styles/GlobalStyles";
 import TypographyStyles from "@/styles/TypographyStyles";
+import { ChakraProvider } from "@chakra-ui/react";
+import type { AppProps } from "next/app";
 import styled from "styled-components";
-import { Provider } from "react-redux";
 
 const LayoutContainer = styled.main`
   display: flex;
