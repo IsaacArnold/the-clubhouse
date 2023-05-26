@@ -2,18 +2,117 @@
     "courses": [
         {
             "courseName": "Wynnum Golf Club",
-            "Par": 70,
-            "Holes": 18,
+            "coursePar": 70,
+            "numberOfHoles": 18,
+            "totalDistance": 5353,
             "holeDetails": [
                 {
-                    "1": {
-                        "par": 4
-                    }
+                    "holeNumber": 1,
+                    "holePar": 4,
+                    "holeDistance": 261,
+                    "strokeIndex": 18
                 },
                 {
-                    "2" : {
-                        "par": 5
-                    }
+                    "holeNumber": 2,
+                    "holePar": 5,
+                    "holeDistance": 466,
+                    "strokeIndex": 9
+                },
+                {
+                    "holeNumber": 3,
+                    "holePar": 4,
+                    "holeDistance": 350,
+                    "strokeIndex": 6
+                },
+                {
+                    "holeNumber": 4,
+                    "holePar": 4,
+                    "holeDistance": 412,
+                    "strokeIndex": 1
+                },
+                {
+                    "holeNumber": 5,
+                    "holePar": 3,
+                    "holeDistance": 166,
+                    "strokeIndex": 5
+                },
+                {
+                    "holeNumber": 6,
+                    "holePar": 3,
+                    "holeDistance": 111,
+                    "strokeIndex": 16
+                },
+                {
+                    "holeNumber": 7,
+                    "holePar": 4,
+                    "holeDistance": 304,
+                    "strokeIndex": 12
+                },
+                {
+                    "holeNumber": 8,
+                    "holePar": 4,
+                    "holeDistance": 297,
+                    "strokeIndex": 14
+                },
+                {
+                    "holeNumber": 9,
+                    "holePar": 3,
+                    "holeDistance": 156,
+                    "strokeIndex": 7
+                },
+                {
+                    "holeNumber": 10,
+                    "holePar": 4,
+                    "holeDistance": 272,
+                    "strokeIndex": 11
+                },
+                {
+                    "holeNumber": 11,
+                    "holePar": 4,
+                    "holeDistance": 406,
+                    "strokeIndex": 2
+                },
+                {
+                    "holeNumber": 12,
+                    "holePar": 5,
+                    "holeDistance": 433,
+                    "strokeIndex": 17
+                },
+                {
+                    "holeNumber": 13,
+                    "holePar": 5,
+                    "holeDistance": 466,
+                    "strokeIndex": 8
+                },
+                {
+                    "holeNumber": 14,
+                    "holePar": 4,
+                    "holeDistance": 266,
+                    "strokeIndex": 13
+                },
+                {
+                    "holeNumber": 15,
+                    "holePar": 3,
+                    "holeDistance": 182,
+                    "strokeIndex": 4
+                },
+                {
+                    "holeNumber": 16,
+                    "holePar": 3,
+                    "holeDistance": 124,
+                    "strokeIndex": 15
+                },
+                {
+                    "holeNumber": 17,
+                    "holePar": 4,
+                    "holeDistance": 366,
+                    "strokeIndex": 3
+                },
+                {
+                    "holeNumber": 18,
+                    "holePar": 4,
+                    "holeDistance": 315,
+                    "strokeIndex": 10
                 }
             ]
         }
