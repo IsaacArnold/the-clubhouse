@@ -101,7 +101,7 @@ const ScoreForm = (props: ScoreFormProps) => {
       />
       <Button onClick={onSubmit}>Submit score</Button>
       <button>
-        <Link href="/myRounds/MyRounds"> View My Rounds</Link>
+        <Link href="/myRounds"> View My Rounds</Link>
       </button>
     </Contanier>
   );

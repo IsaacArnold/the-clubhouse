@@ -119,6 +119,12 @@ const RoundConfigure = () => {
     const currentRoundDocRef = getDoc(newRoundDocRef);
     const currentRoundDetails: any = await currentRoundDocRef;
 
+    if (currentRoundDetails.data().courseID === undefined) {
+      console.error(
+        "You need to provide a courseID - add it in the Firestore Database."
+      );
+    }
+
     // Adds the roundID to the store so we can write scores to a specific round
     updateRoundID(currentRoundDetails.data().roundID);
 
@@ -144,6 +150,7 @@ const RoundConfigure = () => {
     );
     const selectedCourseName = selectedCourse?.courseName;
     setSelectedCourseName(selectedCourseName);
+    console.log("selectedCourseName", selectedCourseName);
   };
 
   return (
@@ -173,7 +180,7 @@ const RoundConfigure = () => {
               focusBorderColor="#4B9D6F"
               id="roundName"
               type="text"
-              placeholder="wynnum0502"
+              placeholder="Stroke play with Jordan"
               value={roundName}
               onChange={(e) => setRoundName(e.target.value)}
               required={true}
@@ -181,10 +188,10 @@ const RoundConfigure = () => {
           </Contanier>
 
           <button onClick={onRoundConfigSubmit}>
-            <Link href="/scorecard/Scorecard">Start</Link>
+            <Link href="/scorecard">Start</Link>
           </button>
           <button>
-            <Link href="/myRounds/MyRounds"> View My Rounds</Link>
+            <Link href="/myRounds">View My Rounds</Link>
           </button>
           <button onClick={signOut}>Sign out</button>
         </InternalContent>

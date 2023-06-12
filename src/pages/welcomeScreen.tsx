@@ -69,7 +69,7 @@ const WelcomeScreen = () => {
         <InternalContent>
           <h2>Hello, {user?.displayName}</h2>
           <button>
-            <Link href="/myRounds/MyRounds">View My Rounds</Link>
+            <Link href="/myRounds">View My Rounds</Link>
           </button>
           <button>
             <Link href="/RoundConfigure">Start a round</Link>
