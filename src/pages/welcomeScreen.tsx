@@ -4,39 +4,8 @@ import { initFirebase } from "firebaseConfig";
 import Link from "next/link";
 import router from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
-import styled from "styled-components";
 
-//#region --- Page styles ---
-const Contanier = styled.section`
-  display: flex;
-  flex-direction: column;
-  margin-top: 50px;
-  .mainImg {
-    border-radius: 25px;
-    width: 100%;
-    height: 200px;
-  }
-  h1 {
-    margin-bottom: 30px;
-  }
-  h2 {
-    margin-top: 30px;
-  }
-`;
-
-const InternalContent = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const SignoutDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-`;
-//#endregion
+import "./WelcomeScreen.module.scss";
 
 const WelcomeScreen = () => {
   initFirebase();
@@ -51,10 +20,10 @@ const WelcomeScreen = () => {
     // If there is no user, then we must have signed out, so redirect back home
     router.push("/");
     return (
-      <SignoutDiv>
+      <div className="signOutDiv">
         <Spinner color="red.500" />
         <h2>Signing out</h2>
-      </SignoutDiv>
+      </div>
     );
   }
 
@@ -64,9 +33,9 @@ const WelcomeScreen = () => {
 
   return (
     <>
-      <Contanier>
+      <div className="container">
         <h1>The Clubhouse</h1>
-        <InternalContent>
+        <div className="internalContent">
           <h2>Hello, {user?.displayName}</h2>
           <button>
             <Link href="/myRounds">View My Rounds</Link>
@@ -75,8 +44,8 @@ const WelcomeScreen = () => {
             <Link href="/RoundConfigure">Start a round</Link>
           </button>
           <button onClick={signOut}>Sign out</button>
-        </InternalContent>
-      </Contanier>
+        </div>
+      </div>
     </>
   );
 };

@@ -9,33 +9,8 @@ import {
 import { database, initFirebase } from "firebaseConfig";
 import { SetStateAction, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import styled from "styled-components";
 
 import styles from "./MyRounds.module.scss";
-
-//#region --- Page styles ---
-const Contanier = styled.section`
-  display: flex;
-  flex-direction: column;
-  margin-top: 50px;
-  .mainImg {
-    border-radius: 25px;
-    width: 100%;
-    height: 200px;
-  }
-  h1 {
-    margin-bottom: 30px;
-  }
-  h2 {
-    margin-top: 30px;
-  }
-`;
-
-const InternalContent = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-//#endregion
 
 const MyRounds = () => {
   initFirebase();
@@ -66,9 +41,9 @@ const MyRounds = () => {
   }, [userID]);
 
   return (
-    <Contanier>
+    <div className="container">
       <h1>My Rounds</h1>
-      <InternalContent>
+      <div className="internalContent">
         {myRounds.map((round) => (
           <div key={round.roundID} className={styles.roundContainer}>
             <div className={styles.roundDetailsTop}>
@@ -78,8 +53,8 @@ const MyRounds = () => {
             <i className={styles.roundDetailsBottom}>{round.courseName}</i>
           </div>
         ))}
-      </InternalContent>
-    </Contanier>
+      </div>
+    </div>
   );
 };
 

@@ -1,0 +1,22 @@
+.scoreDiv {
+  display: flex;
+}
+
+.resultsDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  h3 {
+    margin-top: 20px;
+  }
+}
+
+.individualResult {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--primaryGray);
+  padding: 10px 20px;
+  border-radius: 25px;
+}

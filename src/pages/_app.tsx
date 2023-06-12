@@ -1,23 +1,15 @@
-import GlobalStyles from "@/styles/GlobalStyles";
-import TypographyStyles from "@/styles/TypographyStyles";
 import { ChakraProvider } from "@chakra-ui/react";
 import type { AppProps } from "next/app";
-import styled from "styled-components";
 
-const LayoutContainer = styled.main`
-  display: flex;
-  flex-direction: column;
-  padding: 0 15px;
-`;
+import "../styles/design_tokens.scss";
+import "../styles/globalStyles.scss";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider>
-      <GlobalStyles />
-      <TypographyStyles />
-      <LayoutContainer>
+      <div className="layoutContainer">
         <Component {...pageProps} />
-      </LayoutContainer>
+      </div>
     </ChakraProvider>
   );
 }

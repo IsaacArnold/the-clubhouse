@@ -19,46 +19,7 @@ import Link from "next/link";
 import router from "next/router";
 import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
-
-//#region --- Page styles ---
-const Contanier = styled.section`
-  display: flex;
-  flex-direction: column;
-  margin-top: 50px;
-  .mainImg {
-    border-radius: 25px;
-    width: 100%;
-    height: 200px;
-  }
-  h1 {
-    margin-bottom: 30px;
-  }
-  h2 {
-    margin-top: 30px;
-  }
-`;
-
-const InternalContent = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const SignoutDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-`;
-
-const Button = styled.button`
-  color: var(--primaryGreen);
-  font-weight: 700;
-  text-align: left;
-`;
-//#endregion
 
 const RoundConfigure = () => {
   const [courseNames, setCourseNames] = useState<DocumentData[]>([]);
@@ -97,10 +58,10 @@ const RoundConfigure = () => {
     // If there is no user, then we must have signed out, so redirect back home
     router.push("/");
     return (
-      <SignoutDiv>
+      <div className="signOutDiv">
         <Spinner color="red.500" />
         <h2>Signing out</h2>
-      </SignoutDiv>
+      </div>
     );
   }
   //#endregion
@@ -155,9 +116,9 @@ const RoundConfigure = () => {
 
   return (
     <>
-      <Contanier>
+      <div className="container">
         <h1>Round Details</h1>
-        <InternalContent>
+        <div className="internalContent">
           <h4>Choose a course</h4>
           <Select
             placeholder="Select course"
@@ -173,7 +134,7 @@ const RoundConfigure = () => {
             ))}
           </Select>
 
-          <Contanier>
+          <div className="container">
             <label id="roundName">Round name</label>
             <Input
               mb={4}
@@ -185,7 +146,7 @@ const RoundConfigure = () => {
               onChange={(e) => setRoundName(e.target.value)}
               required={true}
             />
-          </Contanier>
+          </div>
 
           <button onClick={onRoundConfigSubmit}>
             <Link href="/scorecard">Start</Link>
@@ -194,8 +155,8 @@ const RoundConfigure = () => {
             <Link href="/myRounds">View My Rounds</Link>
           </button>
           <button onClick={signOut}>Sign out</button>
-        </InternalContent>
-      </Contanier>
+        </div>
+      </div>
     </>
   );
 };

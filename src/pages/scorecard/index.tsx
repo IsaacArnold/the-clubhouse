@@ -1,72 +1,24 @@
+import ScoreForm from "@/components/ScoreForm";
+import { useCurrentRoundStore } from "@/store/store";
 import { Spinner } from "@chakra-ui/react";
 import { getAuth } from "firebase/auth";
+import {
+  DocumentData,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  orderBy,
+  query,
+  setDoc,
+} from "firebase/firestore";
 import { database, initFirebase } from "firebaseConfig";
 import router from "next/router";
-import { useAuthState } from "react-firebase-hooks/auth";
-import styled from "styled-components";
-
-import {
-  doc,
-  setDoc,
-  getDoc,
-  collection,
-  query,
-  orderBy,
-  onSnapshot,
-  getDocs,
-  DocumentData,
-} from "firebase/firestore";
-import ScoreForm from "@/components/ScoreForm";
 import { SetStateAction, useEffect, useState } from "react";
-import { useCurrentRoundStore } from "@/store/store";
+import { useAuthState } from "react-firebase-hooks/auth";
 
-//#region --- Page styles ---
-const Contanier = styled.section`
-  display: flex;
-  flex-direction: column;
-  margin-top: 50px;
-  .mainImg {
-    border-radius: 25px;
-    width: 100%;
-    height: 200px;
-  }
-  h1 {
-    margin-bottom: 30px;
-  }
-  h2 {
-    margin-top: 30px;
-  }
-`;
-
-const InternalContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: 0 10px;
-`;
-
-const ScoreDiv = styled.div`
-  display: flex;
-`;
-
-const ResultsDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  h3 {
-    margin-top: 20px;
-  }
-`;
-
-const IndividualResult = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--primaryGray);
-  padding: 10px 20px;
-  border-radius: 25px;
-`;
-//#endregion
+import styles from "./Scorecard.module.scss";
 
 const Scorecard = () => {
   const [holeScores, setHoleScores] = useState<DocumentData[]>([]);
@@ -100,24 +52,24 @@ const Scorecard = () => {
   // console.log(holeScores);
 
   return (
-    <Contanier>
+    <div className="container">
       <h1>Your Scorecard</h1>
-      <InternalContent>
-        <ScoreDiv>
+      <div className="internalContent">
+        <div className={styles.scoreDiv}>
           <ScoreForm setUpdateTrigger={setUpdateTriggerCallback} />
-        </ScoreDiv>
-        <ResultsDiv>
+        </div>
+        <div className={styles.resultsDiv}>
           <h3>Your Results</h3>
           {holeScores.map((score) => (
-            <IndividualResult key={score.id}>
+            <div className={styles.individualResult} key={score.id}>
               <p>Hole #: {score.holeNumber}</p>
               <p>Par: {score.holePar}</p>
               <p>Your score: {score.holeScore}</p>
-            </IndividualResult>
+            </div>
           ))}
-        </ResultsDiv>
-      </InternalContent>
-    </Contanier>
+        </div>
+      </div>
+    </div>
   );
 };
 

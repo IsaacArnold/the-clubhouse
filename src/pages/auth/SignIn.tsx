@@ -6,46 +6,9 @@ import { database, initFirebase } from "firebaseConfig";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
-import styled from "styled-components";
 
 import bunkerImg from "../../images/bunker.jpg";
-
-//#region --- Page styles ---
-const Contanier = styled.section`
-  display: flex;
-  flex-direction: column;
-  margin-top: 50px;
-  .mainImg {
-    border-radius: 25px;
-    width: 100%;
-    height: 200px;
-  }
-  h1 {
-    margin-bottom: 30px;
-  }
-  h2 {
-    margin-top: 30px;
-  }
-`;
-
-const InternalContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: 0 10px;
-`;
-
-const RegisterCTA = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-  align-content: center;
-  margin-top: 50px;
-`;
-
-const Button = styled.button`
-  color: var(--primaryGreen);
-  font-weight: 700;
-`;
-//#endregion
+import styles from "./SignIn.module.scss";
 
 const SignIn = () => {
   initFirebase();
@@ -70,7 +33,7 @@ const SignIn = () => {
   };
   return (
     <>
-      <Contanier>
+      <div className="container">
         <h1>The Clubhouse</h1>
         <Image
           src={bunkerImg}
@@ -78,16 +41,18 @@ const SignIn = () => {
           className="mainImg"
           priority
         />
-        <InternalContent>
+        <div className="internalContent">
           <h2>Login</h2>
           <GoogleBtn />
-          <RegisterCTA>
+          <div className={styles.registerCTA}>
             <p>New to The Clubhouse?</p>
-            <Button onClick={registerGoogle}>Register</Button>
-          </RegisterCTA>
-        </InternalContent>
+            <button className="button" onClick={registerGoogle}>
+              Register
+            </button>
+          </div>
+        </div>
         {/* <button onClick={signInGoogle}>Sign-in with Google</button> */}
-      </Contanier>
+      </div>
     </>
   );
 };
