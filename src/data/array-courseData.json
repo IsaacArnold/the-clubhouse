@@ -116,6 +116,122 @@
             ]
         },
         {
+            "courseName": "Windaroo Lakes Golf Club",
+            "coursePar": 72,
+            "numberOfHoles": 18,
+            "totalDistance": 5917,
+            "holeDetails": [
+                {
+                    "holeNumber": 1,
+                    "holePar": 5,
+                    "holeDistance": 488,
+                    "strokeIndex": 18
+                },
+                {
+                    "holeNumber": 2,
+                    "holePar": 4,
+                    "holeDistance": 381,
+                    "strokeIndex": 18
+                },
+                {
+                    "holeNumber": 3,
+                    "holePar": 5,
+                    "holeDistance": 430,
+                    "strokeIndex": 12
+                },
+                {
+                    "holeNumber": 4,
+                    "holePar": 4,
+                    "holeDistance": 337,
+                    "strokeIndex": 3
+                },
+                {
+                    "holeNumber": 5,
+                    "holePar": 3,
+                    "holeDistance": 166,
+                    "strokeIndex": 14
+                },
+                {
+                    "holeNumber": 6,
+                    "holePar": 4,
+                    "holeDistance": 267,
+                    "strokeIndex": 6
+                },
+                {
+                    "holeNumber": 7,
+                    "holePar": 3,
+                    "holeDistance": 151,
+                    "strokeIndex": 10
+                },
+                {
+                    "holeNumber": 8,
+                    "holePar": 4,
+                    "holeDistance": 336,
+                    "strokeIndex": 1
+                },
+                {
+                    "holeNumber": 9,
+                    "holePar": 4,
+                    "holeDistance": 315,
+                    "strokeIndex": 16
+                },
+                {
+                    "holeNumber": 10,
+                    "holePar": 4,
+                    "holeDistance": 375,
+                    "strokeIndex": 5
+                },
+                {
+                    "holeNumber": 11,
+                    "holePar": 3,
+                    "holeDistance": 154,
+                    "strokeIndex": 11
+                },
+                {
+                    "holeNumber": 12,
+                    "holePar": 5,
+                    "holeDistance": 451,
+                    "strokeIndex": 2
+                },
+                {
+                    "holeNumber": 13,
+                    "holePar": 5,
+                    "holeDistance": 503,
+                    "strokeIndex": 15
+                },
+                {
+                    "holeNumber": 14,
+                    "holePar": 4,
+                    "holeDistance": 322,
+                    "strokeIndex": 7
+                },
+                {
+                    "holeNumber": 15,
+                    "holePar": 3,
+                    "holeDistance": 140,
+                    "strokeIndex": 13
+                },
+                {
+                    "holeNumber": 16,
+                    "holePar": 4,
+                    "holeDistance": 373,
+                    "strokeIndex": 4
+                },
+                {
+                    "holeNumber": 17,
+                    "holePar": 4,
+                    "holeDistance": 370,
+                    "strokeIndex": 17
+                },
+                {
+                    "holeNumber": 18,
+                    "holePar": 4,
+                    "holeDistance": 358,
+                    "strokeIndex": 9
+                }
+            ]
+        },
+        {
             "courseName": "Gainsborough Greens Golf Club",
             "coursePar": 72,
             "numberOfHoles": 18,
