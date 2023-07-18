@@ -28,6 +28,7 @@ const RoundConfigure = () => {
   const [courseID, setCourseID] = useState<String>("");
   const [roundDate, setRoundDate] = useState<String>("");
   const { updateRoundID } = useCurrentRoundStore();
+  const currentRoundID = useCurrentRoundStore((state) => state.currentRoundID);
 
   initFirebase();
   const auth = getAuth();
@@ -76,6 +77,7 @@ const RoundConfigure = () => {
       roundDate: roundDate,
       userID: user.uid,
       roundID: uuidv4(),
+      scores: [],
     });
     const currentRoundDocRef = getDoc(newRoundDocRef);
     const currentRoundDetails: any = await currentRoundDocRef;

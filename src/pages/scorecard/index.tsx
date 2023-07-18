@@ -27,6 +27,7 @@ const Scorecard = () => {
   const [courseHoleDetails, setCourseHoleDetails] = useState<DocumentData[]>(
     []
   );
+  const [scores, setScores] = useState<Number[]>([]);
   const currentRoundID = useCurrentRoundStore((state) => state.currentRoundID);
 
   useEffect(() => {
@@ -73,7 +74,6 @@ const Scorecard = () => {
           setTotalDistance(doc.data().totalDistance);
         });
         setCourseHoleDetails(newHoleDetails);
-        console.log(courseHoleDetails);
       } catch (error) {
         console.log("getHoleDetails error: ", error);
       }
@@ -127,6 +127,7 @@ const Scorecard = () => {
         <div>
           <h2>Round scores:</h2>
           {displayHoleDetails()}
+          <button>Submit</button>
         </div>
       </div>
     </div>
