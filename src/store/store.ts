@@ -1,9 +1,11 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-interface CurrentRoundID {
+interface CurrentRoundInfo {
   currentRoundID: number;
+  roundDocumentID: string;
   updateRoundID: (selectedRoundID: number) => void;
+  updateRoundDocID: (documentID: string) => void;
 }
 
 interface SelectedCourseName {
@@ -11,14 +13,21 @@ interface SelectedCourseName {
   updateSelectedCourseName: (selectedCourse: string) => void;
 }
 
-export const useCurrentRoundStore = create<CurrentRoundID>()(
+export const useCurrentRoundStore = create<CurrentRoundInfo>()(
   persist(
     (set) => ({
       currentRoundID: 0,
+      roundDocumentID: "",
       updateRoundID: (selectedRoundID) => {
         console.log("Updating round ID: ", selectedRoundID);
         set((state) => ({
           currentRoundID: (state.currentRoundID = selectedRoundID),
+        }));
+      },
+      updateRoundDocID: (documentID) => {
+        console.log("Setting the store's documentID for this round");
+        set((state) => ({
+          roundDocumentID: (state.roundDocumentID = documentID)
         }));
       },
     }),

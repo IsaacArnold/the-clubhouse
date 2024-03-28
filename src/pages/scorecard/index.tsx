@@ -12,11 +12,13 @@ import {
   query,
   setDoc,
   where,
+  updateDoc,
 } from "firebase/firestore";
 import { database } from "firebaseConfig";
 import { useEffect, useState } from "react";
 
 import styles from "./Scorecard.module.scss";
+import { UserScore } from "@/types/userScore";
 
 const Scorecard = () => {
   // TODO: There is a slight delay in UI update when you create a new round. The old round is still visible for a second then the new data loads in.
@@ -27,15 +29,29 @@ const Scorecard = () => {
   const [courseHoleDetails, setCourseHoleDetails] = useState<DocumentData[]>(
     []
   );
-  const [scores, setScores] = useState<Number[]>([]);
+  const [userScores, setUserScores] = useState<UserScore[]>([]);
   const currentRoundID = useCurrentRoundStore((state) => state.currentRoundID);
+  const roundDocumentID = useCurrentRoundStore(
+    (state) => state.roundDocumentID
+  );
 
   useEffect(() => {
-    console.log("Scorecard > currentRoundID updated:", currentRoundID);
     getCurrentRoundDetails();
   }, [currentRoundID]);
 
+  const updateScoreFieldInDoc = async () => {
+    try {
+      const docRef = doc(database, "/rounds/", `${roundDocumentID}`);
+      await updateDoc(docRef, {
+        scores: userScores,
+      });
+    } catch (error) {
+      console.log("Error updating score field in document: Caught: ", error);
+    }
+  };
+
   const getCurrentRoundDetails = async () => {
+    // currentRoundID comes from the store and is updated on the RoundConfigure screen.
     const q = query(
       collection(database, "rounds"),
       where("roundID", "==", currentRoundID)
@@ -80,6 +96,42 @@ const Scorecard = () => {
     }
   };
 
+  const handleSubmit = () => {
+    updateScoreFieldInDoc();
+    console.log("userScores", userScores);
+  };
+
+  const handleScoreChange = (holeNumber: number, score: number) => {
+    // Check if an object with the specified holeNumber already exists in userScores
+    const existingIndex = userScores.findIndex(
+      (hole) => hole.holeNumber === holeNumber
+    );
+
+    if (existingIndex !== -1) {
+      // Case 1: If an object with the holeNumber exists, update its score
+      setUserScores((prevScores) => {
+        const updatedScores = [...prevScores];
+        updatedScores[existingIndex] = {
+          ...updatedScores[existingIndex],
+          score,
+        };
+        return updatedScores;
+      });
+    } else {
+      // Case 2: If no object with the holeNumber exists, create a new object and add it to userScores
+      setUserScores((prevScores) => [
+        ...prevScores,
+        {
+          holeNumber,
+          holePar:
+            courseHoleDetails.find((item) => item.holeNumber === holeNumber)
+              ?.holePar || 0,
+          score,
+        },
+      ]);
+    }
+  };
+
   const displayHoleDetails = () => {
     return (
       <div className={styles.holeDetailsContainer}>
@@ -99,8 +151,19 @@ const Scorecard = () => {
                 <p>Stroke index: {item.strokeIndex}</p>
               </div>
               <div className={styles.individualScoreHoleDetails}>
-                <label htmlFor="scoreInput">Your score:</label>
-                <input type="number" id="scoreInput" />
+                <label htmlFor={`scoreInput-${item.holeNumber}`}>
+                  Your score:
+                </label>
+                <input
+                  type="number"
+                  id={`scoreInput-${item.holeNumber}`}
+                  onChange={(e) =>
+                    handleScoreChange(
+                      item.holeNumber,
+                      parseInt(e.target.value, 10)
+                    )
+                  }
+                />
               </div>
             </div>
           </div>
@@ -127,7 +190,7 @@ const Scorecard = () => {
         <div>
           <h2>Round scores:</h2>
           {displayHoleDetails()}
-          <button>Submit</button>
+          <button onClick={handleSubmit}>Submit</button>
         </div>
       </div>
     </div>

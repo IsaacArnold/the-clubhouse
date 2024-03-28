@@ -61,7 +61,7 @@ const GoogleBtn = () => {
     let golfUser = null;
 
     if (snapshot.empty) {
-      console.log("Doc doesn't exist");
+      console.log("Doc doesn't exist, so we are going to create one");
       golfUser = {
         id: user?.uid,
         name: user?.displayName,
@@ -86,9 +86,13 @@ const GoogleBtn = () => {
   }
 
   const signInGoogle = async () => {
-    const result = await signInWithPopup(auth, provider);
-    // console.log(result.user);
+    signInWithPopup(auth, provider).then(result => {
+      return result;
+    }).catch(error => {
+      return;
+    });
   };
+
   return (
     <Button onClick={signInGoogle}>
       <GoogleIcon />

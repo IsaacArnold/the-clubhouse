@@ -27,7 +27,7 @@ const RoundConfigure = () => {
   const [roundName, setRoundName] = useState("");
   const [courseID, setCourseID] = useState<String>("");
   const [roundDate, setRoundDate] = useState<String>("");
-  const { updateRoundID } = useCurrentRoundStore();
+  const { updateRoundID, updateRoundDocID } = useCurrentRoundStore();
   const currentRoundID = useCurrentRoundStore((state) => state.currentRoundID);
 
   initFirebase();
@@ -79,6 +79,7 @@ const RoundConfigure = () => {
       roundID: uuidv4(),
       scores: [],
     });
+
     const currentRoundDocRef = getDoc(newRoundDocRef);
     const currentRoundDetails: any = await currentRoundDocRef;
 
@@ -90,6 +91,9 @@ const RoundConfigure = () => {
 
     // Adds the roundID to the store so we can write scores to a specific round
     updateRoundID(currentRoundDetails.data().roundID);
+    
+    // Sending the firestore documentId for this round to the store, so we can access it later to write data to.
+    updateRoundDocID(newRoundDocRef.id);
 
     // Resets the input fields
     setRoundName("");

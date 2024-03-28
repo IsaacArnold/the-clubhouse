@@ -43,6 +43,11 @@ const MyRounds = () => {
   return (
     <div className="container">
       <h1>My Rounds</h1>
+      {myRounds && myRounds.length === 0 ? (
+        <p>You have no rounds saved</p>
+      ) : (
+        <p>Check out your rounds below</p>
+      )}
       <div className="internalContent">
         {myRounds.map((round) => (
           <div key={round.roundID} className={styles.roundContainer}>
