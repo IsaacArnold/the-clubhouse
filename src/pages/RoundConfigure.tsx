@@ -91,7 +91,7 @@ const RoundConfigure = () => {
 
     // Adds the roundID to the store so we can write scores to a specific round
     updateRoundID(currentRoundDetails.data().roundID);
-    
+
     // Sending the firestore documentId for this round to the store, so we can access it later to write data to.
     updateRoundDocID(newRoundDocRef.id);
 
@@ -117,7 +117,6 @@ const RoundConfigure = () => {
     );
     const selectedCourseName = selectedCourse?.courseName;
     setSelectedCourseName(selectedCourseName);
-    console.log("selectedCourseName", selectedCourseName);
   };
 
   return (

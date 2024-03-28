@@ -29,7 +29,6 @@ const SignIn = () => {
 
   const registerGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
-    console.log(result.user);
   };
   return (
     <>

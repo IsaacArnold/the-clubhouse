@@ -67,7 +67,6 @@ const Scorecard = () => {
       );
       setCurrentRoundName(newRoundDetails.roundName);
       setCourseName(newRoundDetails.courseName);
-      console.log(newRoundDetails);
       getHoleDetails(newRoundDetails.courseID);
     } catch (error) {
       console.log("getCurrentRoundDetails error: ", error);
@@ -76,7 +75,6 @@ const Scorecard = () => {
 
   const getHoleDetails = async (courseID: string) => {
     if (courseID) {
-      console.log(courseID);
       const q = query(
         collection(database, "courses"),
         where("courseID", "==", courseID)
