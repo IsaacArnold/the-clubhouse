@@ -13,6 +13,11 @@ interface SelectedCourseName {
   updateSelectedCourseName: (selectedCourse: string) => void;
 }
 
+interface SelectedCourseID {
+  selectedCourseID: string;
+  updateSelectedCourseID: (selectedID: string) => void;
+}
+
 export const useCurrentRoundStore = create<CurrentRoundInfo>()(
   persist(
     (set) => ({
@@ -51,6 +56,24 @@ export const useSelectedCourseNameStore = create<SelectedCourseName>()(
     }),
     {
       name: "selectedCourseNameStore",
+      storage: createJSONStorage(() => sessionStorage),
+    }
+  )
+);
+
+export const useSelectedCourseIDStore = create<SelectedCourseID>()(
+  persist(
+    (set) => ({
+      selectedCourseID: "",
+      updateSelectedCourseID: (selectedCourseID) => {
+        console.log("Updating selected courseID: ", selectedCourseID);
+        set((state) => ({
+          selectedCourseID: (state.selectedCourseID = selectedCourseID),
+        }));
+      },
+    }),
+    {
+      name: "selectedCourseIDStore",
       storage: createJSONStorage(() => sessionStorage),
     }
   )

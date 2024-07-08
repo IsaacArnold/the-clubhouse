@@ -7,7 +7,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 import "./WelcomeScreen.module.scss";
 
-const WelcomeScreen = () => {
+const welcome = () => {
   initFirebase();
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
@@ -50,4 +50,4 @@ const WelcomeScreen = () => {
   );
 };
 
-export default WelcomeScreen;
+export default welcome;

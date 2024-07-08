@@ -24,7 +24,7 @@ const SignIn = () => {
 
   if (user) {
     // Redirects user to this component
-    router.push("/welcomeScreen");
+    router.push("/welcome");
   }
 
   const registerGoogle = async () => {

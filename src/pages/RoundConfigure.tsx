@@ -1,7 +1,4 @@
-import {
-  useCurrentRoundStore,
-  useSelectedCourseNameStore,
-} from "@/store/store";
+import { useCurrentRoundStore, useSelectedCourseIDStore } from "@/store/store";
 import { Input, Select, Spinner } from "@chakra-ui/react";
 import { User, getAuth } from "firebase/auth";
 import {
@@ -28,7 +25,7 @@ const RoundConfigure = () => {
   const [courseID, setCourseID] = useState<String>("");
   const [roundDate, setRoundDate] = useState<String>("");
   const { updateRoundID, updateRoundDocID } = useCurrentRoundStore();
-  const currentRoundID = useCurrentRoundStore((state) => state.currentRoundID);
+  const { updateSelectedCourseID } = useSelectedCourseIDStore();
 
   initFirebase();
   const auth = getAuth();
@@ -115,6 +112,11 @@ const RoundConfigure = () => {
     const selectedCourse = courseNames.find(
       (course) => course.courseID === element.target.value
     );
+    
+    // Set the courseID in the global store so that we can access it from the individual hole scoring page at: /hole/[holeNumber]
+    const selectedCourseID = selectedCourse?.courseID
+    updateSelectedCourseID(selectedCourseID);
+
     const selectedCourseName = selectedCourse?.courseName;
     setSelectedCourseName(selectedCourseName);
   };
