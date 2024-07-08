@@ -30,6 +30,7 @@ const Scorecard = () => {
     []
   );
   const [userScores, setUserScores] = useState<UserScore[]>([]);
+  const [scoresUpdatedSuccess, setScoresUpdatedSuccess] = useState<Boolean>(false);
   const currentRoundID = useCurrentRoundStore((state) => state.currentRoundID);
   const roundDocumentID = useCurrentRoundStore(
     (state) => state.roundDocumentID
@@ -45,6 +46,7 @@ const Scorecard = () => {
       await updateDoc(docRef, {
         scores: userScores,
       });
+      setScoresUpdatedSuccess(true);
     } catch (error) {
       console.log("Error updating score field in document: Caught: ", error);
     }
@@ -97,6 +99,10 @@ const Scorecard = () => {
   const handleSubmit = () => {
     updateScoreFieldInDoc();
     console.log("userScores", userScores);
+    if (scoresUpdatedSuccess) {
+      console.log("Successfully updated the scores in the database");
+      
+    }
   };
 
   const handleScoreChange = (holeNumber: number, score: number) => {
