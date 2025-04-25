@@ -5,8 +5,6 @@ import Link from "next/link";
 import router from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-import "./WelcomeScreen.module.scss";
-
 const welcome = () => {
   initFirebase();
   const auth = getAuth();

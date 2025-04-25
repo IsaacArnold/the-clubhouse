@@ -96,12 +96,14 @@ const Scorecard = () => {
     }
   };
 
+  const fetchIndividualHole = () => {
+    // Filter through the newHoleDetails using the current holeNumber
+  }
+
   const handleSubmit = () => {
     updateScoreFieldInDoc();
-    console.log("userScores", userScores);
     if (scoresUpdatedSuccess) {
       console.log("Successfully updated the scores in the database");
-      
     }
   };
 

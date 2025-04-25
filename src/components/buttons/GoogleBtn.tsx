@@ -82,7 +82,7 @@ const GoogleBtn = () => {
 
   if (user) {
     // Redirects user to this component
-    router.push("/welcome");
+    router.push("/dashboard");
   }
 
   const signInGoogle = async () => {

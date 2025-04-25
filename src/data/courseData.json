@@ -231,6 +231,122 @@
                     "strokeIndex": 14
                 }
             ]
+        },
+        {
+            "courseName": "Minnippi Golf & Range",
+            "coursePar": 72,
+            "numberOfHoles": 18,
+            "totalDistance": 5375,
+            "holeDetails": [
+                {
+                    "holeNumber": 1,
+                    "holePar": 4,
+                    "holeDistance": 276,
+                    "strokeIndex": 15
+                },
+                {
+                    "holeNumber": 2,
+                    "holePar": 4,
+                    "holeDistance": 330,
+                    "strokeIndex": 7
+                },
+                {
+                    "holeNumber": 3,
+                    "holePar": 5,
+                    "holeDistance": 494,
+                    "strokeIndex": 9
+                },
+                {
+                    "holeNumber": 4,
+                    "holePar": 3,
+                    "holeDistance": 164,
+                    "strokeIndex": 5
+                },
+                {
+                    "holeNumber": 5,
+                    "holePar": 4,
+                    "holeDistance": 377,
+                    "strokeIndex": 1
+                },
+                {
+                    "holeNumber": 6,
+                    "holePar": 5,
+                    "holeDistance": 425,
+                    "strokeIndex": 17
+                },
+                {
+                    "holeNumber": 7,
+                    "holePar": 4,
+                    "holeDistance": 257,
+                    "strokeIndex": 11
+                },
+                {
+                    "holeNumber": 8,
+                    "holePar": 4,
+                    "holeDistance": 320,
+                    "strokeIndex": 3
+                },
+                {
+                    "holeNumber": 9,
+                    "holePar": 4,
+                    "holeDistance": 137,
+                    "strokeIndex": 13
+                },
+                {
+                    "holeNumber": 10,
+                    "holePar": 4,
+                    "holeDistance": 287,
+                    "strokeIndex": 10
+                },
+                {
+                    "holeNumber": 11,
+                    "holePar": 3,
+                    "holeDistance": 137,
+                    "strokeIndex": 8
+                },
+                {
+                    "holeNumber": 12,
+                    "holePar": 4,
+                    "holeDistance": 316,
+                    "strokeIndex": 12
+                },
+                {
+                    "holeNumber": 13,
+                    "holePar": 5,
+                    "holeDistance": 2,
+                    "strokeIndex": 5
+                },
+                {
+                    "holeNumber": 14,
+                    "holePar": 3,
+                    "holeDistance": 104,
+                    "strokeIndex": 3
+                },
+                {
+                    "holeNumber": 15,
+                    "holePar": 4,
+                    "holeDistance": 321,
+                    "strokeIndex": 4
+                },
+                {
+                    "holeNumber": 16,
+                    "holePar": 5,
+                    "holeDistance": 436,
+                    "strokeIndex": 14
+                },
+                {
+                    "holeNumber": 17,
+                    "holePar": 4,
+                    "holeDistance": 292,
+                    "strokeIndex": 18
+                },
+                {
+                    "holeNumber": 18,
+                    "holePar": 4,
+                    "holeDistance": 331,
+                    "strokeIndex": 6
+                }
+            ]
         }
     ]
 }
