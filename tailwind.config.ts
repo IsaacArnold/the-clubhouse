@@ -52,6 +52,18 @@ module.exports = {
           "lightened-gray": "rgba(55, 59, 64, 0.57)",
           "lightened-green": "rgba(75, 157, 111, 0.32)",
         },
+        orange: {
+          100: "#fff3e0",
+          600: "#fb8c00",
+          700: "#f57c00",
+          800: "#ef6c00",
+        },
+        red: {
+          100: "#ffebee",
+          600: "#e53935",
+          700: "#d32f2f",
+          800: "#c62828",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
