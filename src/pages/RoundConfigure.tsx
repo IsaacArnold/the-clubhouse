@@ -9,6 +9,7 @@ import {
   getDoc,
   getDocs,
   query,
+  where,
 } from "firebase/firestore";
 import { database, initFirebase } from "firebaseConfig";
 import moment from "moment";
@@ -24,7 +25,7 @@ const RoundConfigure = () => {
   const [roundName, setRoundName] = useState("");
   const [courseID, setCourseID] = useState<String>("");
   const [roundDate, setRoundDate] = useState<String>("");
-  const { updateRoundID, updateRoundDocID } = useCurrentRoundStore();
+  const { updateRoundID, updateRoundDocID, setCourseHoleDetails, setUserScores } = useCurrentRoundStore();
   const { updateSelectedCourseID } = useSelectedCourseIDStore();
 
   initFirebase();
@@ -49,15 +50,15 @@ const RoundConfigure = () => {
 
   //#region --- User stuff ---
   if (loading) {
-    return <Spinner color="blue.500" />;
+    return <Spinner color='blue.500' />;
   }
 
   if (!user) {
     // If there is no user, then we must have signed out, so redirect back home
     router.push("/");
     return (
-      <div className="signOutDiv">
-        <Spinner color="red.500" />
+      <div className='signOutDiv'>
+        <Spinner color='red.500' />
         <h2>Signing out</h2>
       </div>
     );
@@ -66,7 +67,6 @@ const RoundConfigure = () => {
 
   const onRoundConfigSubmit = async () => {
     const collectionRef = collection(database, "rounds");
-    // Adds a doc to the rounds collection
     const newRoundDocRef = await addDoc(collectionRef, {
       roundName,
       courseID: courseID,
@@ -81,40 +81,43 @@ const RoundConfigure = () => {
     const currentRoundDetails: any = await currentRoundDocRef;
 
     if (currentRoundDetails.data().courseID === undefined) {
-      console.error(
-        "You need to provide a courseID - add it in the Firestore Database."
-      );
+      console.error("You need to provide a courseID - add it in the Firestore Database.");
     }
+
+    // Reset the Zustand store state for the new round
+    setUserScores([]); // Clear previous user scores
+    setCourseHoleDetails([]); // Clear previous course hole details
 
     // Adds the roundID to the store so we can write scores to a specific round
     updateRoundID(currentRoundDetails.data().roundID);
-
-    // Sending the firestore documentId for this round to the store, so we can access it later to write data to.
+    // Sending the Firestore documentId for this round to the store, so we can access it later to write data to.
     updateRoundDocID(newRoundDocRef.id);
 
-    // Resets the input fields
+    // Fetch course hole details and set them in the store
+    const courseQuery = query(collection(database, "courses"), where("courseID", "==", courseID));
+    const courseSnapshot = await getDocs(courseQuery);
+    const courseData = courseSnapshot.docs[0]?.data();
+    setCourseHoleDetails(courseData.holeDetails);
+
     setRoundName("");
+    router.push(`/hole/1`);
   };
 
   const signOut = async () => {
     return auth.signOut();
   };
 
-  const getAndSetSelectedCourseNameAndID = (
-    element: ChangeEvent<HTMLSelectElement>
-  ) => {
+  const getAndSetSelectedCourseNameAndID = (element: ChangeEvent<HTMLSelectElement>) => {
     // Sets the courseID so we can add it to the round document in DB.
     setCourseID(element.target.value);
 
     /*  
       Finds the repsective courseName based off the selected option and stores it in localState which then adds it to the round document. This is so we can read it in the My Rounds component.
     */
-    const selectedCourse = courseNames.find(
-      (course) => course.courseID === element.target.value
-    );
-    
+    const selectedCourse = courseNames.find((course) => course.courseID === element.target.value);
+
     // Set the courseID in the global store so that we can access it from the individual hole scoring page at: /hole/[holeNumber]
-    const selectedCourseID = selectedCourse?.courseID
+    const selectedCourseID = selectedCourse?.courseID;
     updateSelectedCourseID(selectedCourseID);
 
     const selectedCourseName = selectedCourse?.courseName;
@@ -123,12 +126,12 @@ const RoundConfigure = () => {
 
   return (
     <>
-      <div className="container">
+      <div className='container'>
         <h1>Round Details</h1>
-        <div className="internalContent">
+        <div className='internalContent'>
           <h4>Choose a course</h4>
           <Select
-            placeholder="Select course"
+            placeholder='Select course'
             isRequired={true}
             onChange={(e) => {
               getAndSetSelectedCourseNameAndID(e);
@@ -141,14 +144,14 @@ const RoundConfigure = () => {
             ))}
           </Select>
 
-          <div className="container">
-            <label id="roundName">Round name</label>
+          <div className='container'>
+            <label id='roundName'>Round name</label>
             <Input
               mb={4}
-              focusBorderColor="#4B9D6F"
-              id="roundName"
-              type="text"
-              placeholder="Stroke play with Jordan"
+              focusBorderColor='#4B9D6F'
+              id='roundName'
+              type='text'
+              placeholder='Stroke play with Jordan'
               value={roundName}
               onChange={(e) => setRoundName(e.target.value)}
               required={true}
@@ -156,10 +159,10 @@ const RoundConfigure = () => {
           </div>
 
           <button onClick={onRoundConfigSubmit}>
-            <Link href="/scorecard">Start</Link>
+            <Link href='/scorecard'>Start</Link>
           </button>
           <button>
-            <Link href="/myRounds">View My Rounds</Link>
+            <Link href='/myRounds'>View My Rounds</Link>
           </button>
           <button onClick={signOut}>Sign out</button>
         </div>

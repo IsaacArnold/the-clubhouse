@@ -1,39 +1,52 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-interface CurrentRoundInfo {
+interface HoleDetails {
+  holeNumber: number;
+  holePar: number;
+  holeDistance: number;
+  strokeIndex: number;
+}
+
+interface UserScore {
+  holeNumber: number;
+  holePar: number;
+  score: number;
+}
+
+interface CurrentRoundState {
   currentRoundID: number;
   roundDocumentID: string;
+  courseHoleDetails: HoleDetails[];
+  userScores: UserScore[];
   updateRoundID: (selectedRoundID: number) => void;
   updateRoundDocID: (documentID: string) => void;
+  setCourseHoleDetails: (details: HoleDetails[]) => void;
+  setUserScores: (scores: UserScore[]) => void;
 }
 
-interface SelectedCourseName {
-  selectedCourseName: string;
-  updateSelectedCourseName: (selectedCourse: string) => void;
-}
-
-interface SelectedCourseID {
-  selectedCourseID: string;
-  updateSelectedCourseID: (selectedID: string) => void;
-}
-
-export const useCurrentRoundStore = create<CurrentRoundInfo>()(
+export const useCurrentRoundStore = create<CurrentRoundState>()(
   persist(
     (set) => ({
       currentRoundID: 0,
       roundDocumentID: "",
+      courseHoleDetails: [],
+      userScores: [],
       updateRoundID: (selectedRoundID) => {
         console.log("Updating round ID: ", selectedRoundID);
-        set((state) => ({
-          currentRoundID: (state.currentRoundID = selectedRoundID),
-        }));
+        set({ currentRoundID: selectedRoundID });
       },
       updateRoundDocID: (documentID) => {
         console.log("Setting the store's documentID for this round");
-        set((state) => ({
-          roundDocumentID: (state.roundDocumentID = documentID)
-        }));
+        set({ roundDocumentID: documentID });
+      },
+      setCourseHoleDetails: (details) => {
+        console.log("Setting course hole details");
+        set({ courseHoleDetails: details });
+      },
+      setUserScores: (scores) => {
+        console.log("Updating user scores");
+        set({ userScores: scores });
       },
     }),
     {
@@ -43,15 +56,18 @@ export const useCurrentRoundStore = create<CurrentRoundInfo>()(
   )
 );
 
+interface SelectedCourseName {
+  selectedCourseName: string;
+  updateSelectedCourseName: (selectedCourse: string) => void;
+}
+
 export const useSelectedCourseNameStore = create<SelectedCourseName>()(
   persist(
     (set) => ({
       selectedCourseName: "",
       updateSelectedCourseName: (selectedCourse) => {
         console.log("Updating selected courseName: ", selectedCourse);
-        set((state) => ({
-          selectedCourseName: (state.selectedCourseName = selectedCourse),
-        }));
+        set({ selectedCourseName: selectedCourse });
       },
     }),
     {
@@ -61,15 +77,18 @@ export const useSelectedCourseNameStore = create<SelectedCourseName>()(
   )
 );
 
+interface SelectedCourseID {
+  selectedCourseID: string;
+  updateSelectedCourseID: (selectedID: string) => void;
+}
+
 export const useSelectedCourseIDStore = create<SelectedCourseID>()(
   persist(
     (set) => ({
       selectedCourseID: "",
       updateSelectedCourseID: (selectedCourseID) => {
         console.log("Updating selected courseID: ", selectedCourseID);
-        set((state) => ({
-          selectedCourseID: (state.selectedCourseID = selectedCourseID),
-        }));
+        set({ selectedCourseID: selectedCourseID });
       },
     }),
     {

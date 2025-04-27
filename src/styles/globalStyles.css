@@ -1,0 +1,80 @@
+@import "tailwindcss/preflight";
+@tailwind utilities;
+
+:root {
+  --primaryWhite: #f4f5fa;
+  --primaryGreen: #4b9d6f;
+  --primaryText: #373b40;
+  --primaryGray: #d9d9d9;
+  --lightenedGray: rgba(55, 59, 64, 0.57);
+  --lightenedGreen: rgba(75, 157, 111, 0.32);
+}
+
+/* Custom classes that don't rely on Tailwind processing */
+.bg-clubhouse-white {
+  background-color: var(--primaryWhite);
+}
+.bg-clubhouse-green {
+  background-color: var(--primaryGreen);
+}
+.bg-clubhouse-gray {
+  background-color: var(--primaryGray);
+}
+.bg-clubhouse-lightened-green {
+  background-color: var(--lightenedGreen);
+}
+.bg-clubhouse-lightened-gray {
+  background-color: var(--lightenedGray);
+}
+.text-clubhouse-text {
+  color: var(--primaryText);
+}
+.text-clubhouse-green {
+  color: var(--primaryGreen);
+}
+.text-clubhouse-lightened-gray {
+  color: var(--lightenedGray);
+}
+.border-clubhouse-green {
+  border-color: var(--primaryGreen);
+}
+.border-clubhouse-gray {
+  border-color: var(--primaryGray);
+}
+
+/* Add hover variants */
+.hover\:bg-clubhouse-lightened-green:hover {
+  background-color: var(--lightenedGreen);
+}
+.hover\:bg-opacity-90:hover {
+  opacity: 0.9;
+}
+
+/* Add some basic utility classes that might be needed */
+.bg-white {
+  background-color: white;
+}
+.bg-orange-100 {
+  background-color: #fff3e0;
+}
+.bg-red-100 {
+  background-color: #ffebee;
+}
+.text-orange-700 {
+  color: #f57c00;
+}
+.text-orange-800 {
+  color: #ef6c00;
+}
+.text-red-600 {
+  color: #e53935;
+}
+.text-red-700 {
+  color: #d32f2f;
+}
+.text-red-800 {
+  color: #c62828;
+}
+.text-white {
+  color: white;
+}
