@@ -1,0 +1,192 @@
+.signInContainer {
+  min-height: 100vh;
+  background-color: var(--primaryWhite);
+  display: flex;
+  flex-direction: column;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 40vh;
+  overflow: hidden;
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+}
+
+.appTitle {
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.appTagline {
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.contentCard {
+  margin-top: -2rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  border-radius: 1rem;
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  z-index: 10;
+  flex: 1;
+}
+
+.cardHeader {
+  margin-bottom: 1.5rem;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primaryText);
+  margin-bottom: 0.5rem;
+}
+
+.cardSubtitle {
+  font-size: 0.875rem;
+  color: var(--lightenedGray);
+}
+
+.googleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: white;
+  border: 1px solid var(--primaryGray);
+  color: var(--primaryText);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.googleButton:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.googleIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  color: var(--lightenedGray);
+  font-size: 0.875rem;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid var(--primaryGray);
+}
+
+.divider::before {
+  margin-right: 0.5rem;
+}
+
+.divider::after {
+  margin-left: 0.5rem;
+}
+
+.registerSection {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.registerText {
+  font-size: 0.875rem;
+  color: var(--lightenedGray);
+  margin-bottom: 0.75rem;
+}
+
+.registerButton {
+  background-color: var(--primaryGreen);
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.registerButton:hover {
+  opacity: 0.9;
+}
+
+.footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--lightenedGray);
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+}
+
+.loadingIcon {
+  color: var(--primaryGreen);
+}
+
+.loadingText {
+  font-size: 1.125rem;
+  color: var(--primaryText);
+}
+
+@media (min-width: 640px) {
+  .imageContainer {
+    height: 50vh;
+  }
+
+  .contentCard {
+    max-width: 28rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2rem;
+  }
+}
