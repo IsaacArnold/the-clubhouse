@@ -1,0 +1,219 @@
+.holeContainer {
+  min-height: 100vh;
+  background-color: var(--primaryWhite);
+}
+
+.header {
+  background-color: var(--primaryGreen);
+  color: white;
+  padding: 0.75rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.backLink {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: white;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.headerTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.mainContent {
+  padding: 1.5rem 0;
+}
+
+.holeCard {
+  border: 1px solid var(--primaryGray);
+  border-radius: 0.5rem;
+  background-color: white;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  margin-bottom: 1.5rem;
+}
+
+.holeHeader {
+  background-color: var(--primaryGreen);
+  color: white;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.holeTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.holePar {
+  background-color: white;
+  color: var(--primaryGreen);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+}
+
+.holeContent {
+  padding: 1.5rem 1rem;
+}
+
+.holeDetailsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.detailCard {
+  background-color: var(--primaryWhite);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.detailLabel {
+  font-size: 0.75rem;
+  color: var(--lightenedGray);
+  margin-bottom: 0.25rem;
+}
+
+.detailValue {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primaryText);
+}
+
+.scoreSection {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.scoreLabel {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primaryText);
+  margin-bottom: 0.75rem;
+}
+
+.scoreInput {
+  width: 100%;
+  max-width: 8rem;
+  padding: 0.75rem;
+  font-size: 1.5rem;
+  text-align: center;
+  border: 2px solid var(--primaryGray);
+  border-radius: 0.5rem;
+  margin: 0 auto 1.5rem;
+  font-weight: 600;
+  color: var(--primaryText);
+}
+
+.scoreInput:focus {
+  outline: none;
+  border-color: var(--primaryGreen);
+}
+
+.navigationButtons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.navButton {
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.prevButton {
+  background-color: var(--primaryWhite);
+  border: 1px solid var(--primaryGray);
+  color: var(--primaryText);
+}
+
+.prevButton:hover {
+  background-color: var(--primaryGray);
+}
+
+.submitButton {
+  background-color: var(--primaryGreen);
+  border: none;
+  color: white;
+  grid-column: span 1;
+}
+
+.submitButton:hover {
+  opacity: 0.9;
+}
+
+.nextButton {
+  background-color: var(--lightenedGreen);
+  border: 1px solid var(--primaryGreen);
+  color: var(--primaryGreen);
+}
+
+.nextButton:hover {
+  background-color: var(--primaryGreen);
+  color: white;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+}
+
+.loadingIcon {
+  color: var(--primaryGreen);
+}
+
+.loadingText {
+  font-size: 1.125rem;
+  color: var(--primaryText);
+}
+
+@media (min-width: 640px) {
+  .holeContent {
+    padding: 2rem;
+  }
+
+  .holeDetailsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .navigationButtons {
+    grid-template-columns: 1fr 2fr 1fr;
+  }
+
+  .submitButton {
+    grid-column: 2;
+  }
+}
