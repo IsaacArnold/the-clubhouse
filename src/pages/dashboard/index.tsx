@@ -87,7 +87,7 @@ const Dashboard = () => {
               </div>
 
               <div className={styles.actionCard}>
-                <Link href="/RoundConfigure" className={styles.actionLink}>
+                <Link href="/configureRound" className={styles.actionLink}>
                   <div className={styles.actionIcon}>
                     <Flag size={20} />
                   </div>
