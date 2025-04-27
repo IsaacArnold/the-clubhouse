@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import type { UserScore } from "@/types/userScore";
 import { ArrowLeft, Flag, Share2, Trophy } from "lucide-react";
 import Link from "next/link";
+import styles from "./Scorecard.module.css";
 
 const Scorecard = () => {
   const [currentRoundName, setCurrentRoundName] = useState<string>("");
@@ -15,6 +16,7 @@ const Scorecard = () => {
   const [totalDistance, setTotalDistance] = useState<number>(0);
   const [userScores, setUserScores] = useState<UserScore[]>([]);
   const [date, setDate] = useState<string>(new Date().toLocaleDateString());
+  const [weather, setWeather] = useState<string>("Sunny, 24°C");
 
   const roundDocumentID = useCurrentRoundStore((state) => state.roundDocumentID);
   const courseHoleDetails = useCurrentRoundStore((state) => state.courseHoleDetails);
@@ -46,6 +48,11 @@ const Scorecard = () => {
           // Set date if available in roundData
           if (roundData.date) {
             setDate(roundData.date);
+          }
+
+          // Set weather if available in roundData
+          if (roundData.weather) {
+            setWeather(roundData.weather);
           }
         } else {
           console.error("No such round document!");
@@ -134,12 +141,20 @@ const Scorecard = () => {
     };
   };
 
-  // Helper function to determine score color
-  const getScoreColor = (score: number, par: number) => {
-    if (score < par) return "text-clubhouse-green";
-    if (score === par) return "text-clubhouse-text";
-    if (score === par + 1) return "text-orange-600";
-    return "text-red-600";
+  // Helper function to get score style class
+  const getScoreClass = (score: number, par: number) => {
+    if (score < par) return styles.birdie;
+    if (score === par) return styles.par;
+    if (score === par + 1) return styles.bogey;
+    return styles.double;
+  };
+
+  // Helper function to get score badge class
+  const getScoreBadgeClass = (score: number, par: number) => {
+    if (score < par) return `${styles.scoreBadge} ${styles.birdieBadge}`;
+    if (score === par) return `${styles.scoreBadge} ${styles.parBadge}`;
+    if (score === par + 1) return `${styles.scoreBadge} ${styles.bogeyBadge}`;
+    return `${styles.scoreBadge} ${styles.doubleBadge}`;
   };
 
   // Helper function to get score label
@@ -158,186 +173,166 @@ const Scorecard = () => {
   const stats = calculateStats();
 
   return (
-    <div className='min-h-screen bg-clubhouse-white'>
-      <header className='bg-clubhouse-green text-white p-3 sticky top-0 z-10'>
-        <div className='container mx-auto'>
-          <div className='flex items-center justify-between'>
-            <Link href='/dashboard' className='flex items-center gap-1'>
-              <ArrowLeft size={18} />
-              <span className='font-medium text-sm'>Back</span>
-            </Link>
-            <h1 className='text-lg font-bold'>Clubhouse</h1>
-            <button className='text-white p-1 h-8 w-8 flex items-center justify-center'>
-              <Share2 size={18} />
-            </button>
-          </div>
+    <div className={styles.scorecardContainer}>
+      <header className={styles.header}>
+        <div className='container flex items-center justify-between'>
+          <Link href='/dashboard' className={styles.headerLink}>
+            <ArrowLeft size={18} />
+            <span className='font-medium text-sm'>Back</span>
+          </Link>
+          <h1 className={styles.headerTitle}>Clubhouse</h1>
+          <button className={styles.shareButton}>
+            <Share2 size={18} />
+          </button>
         </div>
       </header>
 
-      <main className='container mx-auto px-3 py-4 max-w-2xl'>
-        <div className='mb-4'>
-          <h2 className='text-2xl sm:text-3xl font-bold text-clubhouse-text'>
-            Review Your Scorecard
-          </h2>
+      <main className={`container ${styles.mainContent}`}>
+        <div>
+          <h2 className={styles.pageTitle}>Review Your Scorecard</h2>
+          <p className={styles.pageSubtitle}>
+            {date} • {weather}
+          </p>
         </div>
 
-        <div className='mb-4 border border-clubhouse-gray rounded-lg shadow-md bg-white overflow-hidden'>
-          <div className='bg-clubhouse-green text-white p-3 sm:p-4'>
-            <div className='flex justify-between items-center'>
-              <h3 className='text-lg font-semibold'>Round Details</h3>
-              <span className='bg-white text-clubhouse-green text-xs sm:text-sm px-2 py-1 rounded-full'>
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <div className='flex items-center justify-between'>
+              <h3 className={styles.cardTitle}>Round Details</h3>
+              <span className={styles.parBadge}>
                 {stats.relativeToPar > 0 ? `+${stats.relativeToPar}` : stats.relativeToPar}
               </span>
             </div>
           </div>
-          <div className='p-3 sm:p-4'>
-            <div className='grid grid-cols-2 gap-3'>
+          <div className={styles.cardContent}>
+            <div className={styles.detailsGrid}>
               <div>
-                <p className='text-xs text-clubhouse-lightened-gray'>Course</p>
-                <p className='font-medium text-clubhouse-text text-sm'>{courseName}</p>
+                <p className={styles.detailLabel}>Course</p>
+                <p className={styles.detailValue}>{courseName}</p>
               </div>
               <div>
-                <p className='text-xs text-clubhouse-lightened-gray'>Round Name</p>
-                <p className='font-medium text-clubhouse-text text-sm'>{currentRoundName}</p>
+                <p className={styles.detailLabel}>Round Name</p>
+                <p className={styles.detailValue}>{currentRoundName}</p>
               </div>
               <div>
-                <p className='text-xs text-clubhouse-lightened-gray'>Course Par</p>
-                <p className='font-medium text-clubhouse-text text-sm'>{coursePar}</p>
+                <p className={styles.detailLabel}>Course Par</p>
+                <p className={styles.detailValue}>{coursePar}</p>
               </div>
               <div>
-                <p className='text-xs text-clubhouse-lightened-gray'>Course Distance</p>
-                <p className='font-medium text-clubhouse-text text-sm'>{totalDistance}m</p>
+                <p className={styles.detailLabel}>Course Distance</p>
+                <p className={styles.detailValue}>{totalDistance}m</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className='mb-4 border border-clubhouse-gray rounded-lg shadow-md bg-white overflow-hidden'>
-          <div className='bg-clubhouse-green text-white p-3 sm:p-4'>
-            <div className='flex justify-between items-center'>
-              <h3 className='text-lg font-semibold'>Round Summary</h3>
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <div className='flex items-center justify-between'>
+              <h3 className={styles.cardTitle}>Round Summary</h3>
               <div className='flex items-center gap-1'>
                 <Trophy size={16} />
                 <span className='font-bold'>{stats.totalScore}</span>
               </div>
             </div>
           </div>
-          <div className='p-3 sm:p-4'>
-            <div className='grid grid-cols-2 gap-2 sm:gap-3'>
-              <div className='text-center p-2 bg-clubhouse-lightened-green rounded-lg'>
-                <p className='text-clubhouse-green font-bold text-lg'>{stats.birdies}</p>
-                <p className='text-xs sm:text-sm text-clubhouse-text'>Birdies</p>
+          <div className={styles.cardContent}>
+            <div className={styles.statsGrid}>
+              <div className={`${styles.statCard} ${styles.birdieCard}`}>
+                <p className={`${styles.statValue} ${styles.birdieValue}`}>{stats.birdies}</p>
+                <p className={styles.statLabel}>Birdies</p>
               </div>
-              <div className='text-center p-2 bg-clubhouse-gray rounded-lg'>
-                <p className='text-clubhouse-text font-bold text-lg'>{stats.pars}</p>
-                <p className='text-xs sm:text-sm text-clubhouse-text'>Pars</p>
+              <div className={`${styles.statCard} ${styles.parCard}`}>
+                <p className={`${styles.statValue} ${styles.parValue}`}>{stats.pars}</p>
+                <p className={styles.statLabel}>Pars</p>
               </div>
-              <div className='text-center p-2 bg-orange-100 rounded-lg'>
-                <p className='text-orange-700 font-bold text-lg'>{stats.bogeys}</p>
-                <p className='text-xs sm:text-sm text-clubhouse-text'>Bogeys</p>
+              <div className={`${styles.statCard} ${styles.bogeyCard}`}>
+                <p className={`${styles.statValue} ${styles.bogeyValue}`}>{stats.bogeys}</p>
+                <p className={styles.statLabel}>Bogeys</p>
               </div>
-              <div className='text-center p-2 bg-red-100 rounded-lg'>
-                <p className='text-red-700 font-bold text-lg'>{stats.doubleBogeys}</p>
-                <p className='text-xs sm:text-sm text-clubhouse-text'>Double+</p>
+              <div className={`${styles.statCard} ${styles.doubleCard}`}>
+                <p className={`${styles.statValue} ${styles.doubleValue}`}>{stats.doubleBogeys}</p>
+                <p className={styles.statLabel}>Double+</p>
               </div>
             </div>
           </div>
         </div>
 
-        <h3 className='text-xl sm:text-2xl font-bold text-clubhouse-text mb-3'>Hole by Hole</h3>
+        <h3 className={styles.sectionTitle}>Hole by Hole</h3>
 
-        <div className='space-y-2 sm:space-y-3'>
+        <div className={styles.holesList}>
           {courseHoleDetails.map((hole) => {
             const userScore = userScores.find((score) => score.holeNumber === hole.holeNumber);
 
             return (
-              <div
-                key={hole.holeNumber}
-                className='border border-clubhouse-gray rounded-lg shadow-sm bg-white overflow-hidden'
-              >
-                <div className='flex'>
-                  <div className='flex items-center justify-center bg-clubhouse-green text-white p-3 w-12 sm:w-16'>
-                    <div className='text-center'>
-                      <Flag size={14} className='mx-auto mb-1' />
-                      <span className='text-lg font-bold'>{hole.holeNumber}</span>
+              <div key={hole.holeNumber} className={styles.holeCard}>
+                <div className={styles.holeNumber}>
+                  <div className='text-center'>
+                    <Flag size={14} className={styles.holeFlag} />
+                    <span className={styles.holeNumberText}>{hole.holeNumber}</span>
+                  </div>
+                </div>
+                <div className={styles.holeContent}>
+                  <div className={styles.holeDetailsGrid}>
+                    <div>
+                      <p className={styles.detailLabel}>Par</p>
+                      <p className={styles.detailValue}>{hole.holePar}</p>
+                    </div>
+                    <div>
+                      <p className={styles.detailLabel}>Distance</p>
+                      <p className={styles.detailValue}>{hole.holeDistance}m</p>
+                    </div>
+                    <div>
+                      <p className={styles.detailLabel}>SI</p>
+                      <p className={styles.detailValue}>{hole.strokeIndex}</p>
                     </div>
                   </div>
-                  <div className='flex-1 p-3'>
-                    <div className='grid grid-cols-3 gap-2 sm:gap-4'>
-                      <div>
-                        <p className='text-xs text-clubhouse-lightened-gray'>Par</p>
-                        <p className='font-medium text-clubhouse-text text-sm'>{hole.holePar}</p>
-                      </div>
-                      <div>
-                        <p className='text-xs text-clubhouse-lightened-gray'>Distance</p>
-                        <p className='font-medium text-clubhouse-text text-sm'>
-                          {hole.holeDistance}m
-                        </p>
-                      </div>
-                      <div>
-                        <p className='text-xs text-clubhouse-lightened-gray'>SI</p>
-                        <p className='font-medium text-clubhouse-text text-sm'>
-                          {hole.strokeIndex}
-                        </p>
+                  <div className={styles.holeSeparator}></div>
+                  <div className={styles.scoreRow}>
+                    <div>
+                      <p className={styles.scoreLabel}>Your Score</p>
+                      <div className={styles.scoreDisplay}>
+                        {userScore && userScore.score ? (
+                          <>
+                            <span
+                              className={`${styles.scoreValue} ${getScoreClass(
+                                userScore.score,
+                                hole.holePar
+                              )}`}
+                            >
+                              {userScore.score}
+                            </span>
+                            <span className={getScoreBadgeClass(userScore.score, hole.holePar)}>
+                              {getScoreLabel(userScore.score, hole.holePar)}
+                            </span>
+                          </>
+                        ) : (
+                          <input
+                            type='number'
+                            className={styles.scoreInput}
+                            value={userScore?.score || ""}
+                            onChange={(e) =>
+                              handleScoreChange(
+                                hole.holeNumber,
+                                Number.parseInt(e.target.value, 10)
+                              )
+                            }
+                            placeholder='Score'
+                          />
+                        )}
                       </div>
                     </div>
-                    <div className='h-px bg-clubhouse-gray my-2'></div>
-                    <div className='flex justify-between items-center'>
-                      <div>
-                        <p className='text-xs text-clubhouse-lightened-gray'>Your Score</p>
-                        <div className='flex items-center gap-2'>
-                          {userScore && userScore.score ? (
-                            <>
-                              <span
-                                className={`text-lg font-bold ${getScoreColor(
-                                  userScore.score,
-                                  hole.holePar
-                                )}`}
-                              >
-                                {userScore.score}
-                              </span>
-                              <span
-                                className={`text-xs px-2 py-0.5 rounded-full ${
-                                  userScore.score < hole.holePar
-                                    ? "bg-clubhouse-lightened-green text-clubhouse-green"
-                                    : userScore.score === hole.holePar
-                                    ? "bg-clubhouse-gray text-clubhouse-text"
-                                    : userScore.score === hole.holePar + 1
-                                    ? "bg-orange-100 text-orange-800"
-                                    : "bg-red-100 text-red-800"
-                                }`}
-                              >
-                                {getScoreLabel(userScore.score, hole.holePar)}
-                              </span>
-                            </>
-                          ) : (
-                            <input
-                              type='number'
-                              className='w-16 p-1 border border-clubhouse-gray rounded text-center'
-                              value={userScore?.score || ""}
-                              onChange={(e) =>
-                                handleScoreChange(
-                                  hole.holeNumber,
-                                  Number.parseInt(e.target.value, 10)
-                                )
-                              }
-                              placeholder='Score'
-                            />
-                          )}
-                        </div>
-                      </div>
-                      <button
-                        className='text-clubhouse-green border border-clubhouse-green hover:bg-clubhouse-lightened-green h-8 text-xs px-3 py-1 rounded'
-                        onClick={() => {
-                          // If there's already a score, allow editing by clearing it
-                          if (userScore && userScore.score) {
-                            handleScoreChange(hole.holeNumber, 0);
-                          }
-                        }}
-                      >
-                        {userScore && userScore.score ? "Edit" : "Save"}
-                      </button>
-                    </div>
+                    <button
+                      className={styles.editButton}
+                      onClick={() => {
+                        // If there's already a score, allow editing by clearing it
+                        if (userScore && userScore.score) {
+                          handleScoreChange(hole.holeNumber, 0);
+                        }
+                      }}
+                    >
+                      {userScore && userScore.score ? "Edit" : "Save"}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -345,16 +340,11 @@ const Scorecard = () => {
           })}
         </div>
 
-        <div className='mt-6 flex flex-col sm:flex-row justify-center gap-3 px-4'>
-          <button
-            className='bg-clubhouse-green hover:bg-opacity-90 text-white w-full py-2 rounded-md font-medium'
-            onClick={handleSubmitFinalScores}
-          >
+        <div className={styles.actionButtons}>
+          <button className={styles.primaryButton} onClick={handleSubmitFinalScores}>
             Submit Final Scores
           </button>
-          <button className='border border-clubhouse-green text-clubhouse-green hover:bg-clubhouse-lightened-green w-full py-2 rounded-md font-medium'>
-            Share Round
-          </button>
+          <button className={styles.secondaryButton}>Share Round</button>
         </div>
       </main>
     </div>
