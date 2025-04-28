@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useCurrentRoundStore } from "@/store/store";
 import type { UserScore } from "@/types/userScore";
-import styles from "./Hole.module.css";
+import styles from "./HoleNumber.module.css";
 import { ArrowLeft, ArrowRight, Check, Flag } from "lucide-react";
 import Link from "next/link";
 
