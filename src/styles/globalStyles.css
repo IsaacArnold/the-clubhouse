@@ -1,6 +1,4 @@
-@import "tailwindcss/preflight";
-@tailwind utilities;
-
+/* Global CSS Variables for colors */
 :root {
   --primaryWhite: #f4f5fa;
   --primaryGreen: #4b9d6f;
@@ -10,71 +8,53 @@
   --lightenedGreen: rgba(75, 157, 111, 0.32);
 }
 
-/* Custom classes that don't rely on Tailwind processing */
-.bg-clubhouse-white {
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+    "Helvetica Neue", sans-serif;
+  line-height: 1.5;
+  color: var(--primaryText);
   background-color: var(--primaryWhite);
 }
-.bg-clubhouse-green {
-  background-color: var(--primaryGreen);
-}
-.bg-clubhouse-gray {
-  background-color: var(--primaryGray);
-}
-.bg-clubhouse-lightened-green {
-  background-color: var(--lightenedGreen);
-}
-.bg-clubhouse-lightened-gray {
-  background-color: var(--lightenedGray);
-}
-.text-clubhouse-text {
-  color: var(--primaryText);
-}
-.text-clubhouse-green {
-  color: var(--primaryGreen);
-}
-.text-clubhouse-lightened-gray {
-  color: var(--lightenedGray);
-}
-.border-clubhouse-green {
-  border-color: var(--primaryGreen);
-}
-.border-clubhouse-gray {
-  border-color: var(--primaryGray);
+
+/* Common utility classes that might be used across components */
+.container {
+  width: 100%;
+  max-width: 42rem; /* 672px */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 
-/* Add hover variants */
-.hover\:bg-clubhouse-lightened-green:hover {
-  background-color: var(--lightenedGreen);
-}
-.hover\:bg-opacity-90:hover {
-  opacity: 0.9;
+.flex {
+  display: flex;
 }
 
-/* Add some basic utility classes that might be needed */
-.bg-white {
-  background-color: white;
+.flex-col {
+  flex-direction: column;
 }
-.bg-orange-100 {
-  background-color: #fff3e0;
+
+.items-center {
+  align-items: center;
 }
-.bg-red-100 {
-  background-color: #ffebee;
+
+.justify-between {
+  justify-content: space-between;
 }
-.text-orange-700 {
-  color: #f57c00;
+
+.justify-center {
+  justify-content: center;
 }
-.text-orange-800 {
-  color: #ef6c00;
-}
-.text-red-600 {
-  color: #e53935;
-}
-.text-red-700 {
-  color: #d32f2f;
-}
-.text-red-800 {
-  color: #c62828;
-}
+
 .text-white {
   color: white;
 }
+
+/* Add any other global styles you need here */
