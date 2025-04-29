@@ -61,12 +61,6 @@ const Dashboard = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      <header className={styles.header}>
-        <div className="container">
-          <h1 className={styles.headerTitle}>Clubhouse</h1>
-        </div>
-      </header>
-
       <main className={`container ${styles.mainContent}`}>
         <div className={styles.welcomeCard}>
           <div className={styles.welcomeHeader}>

@@ -174,19 +174,6 @@ const Scorecard = () => {
 
   return (
     <div className={styles.scorecardContainer}>
-      <header className={styles.header}>
-        <div className='container flex items-center justify-between'>
-          <Link href='/dashboard' className={styles.headerLink}>
-            <ArrowLeft size={18} />
-            <span className='font-medium text-sm'>Back</span>
-          </Link>
-          <h1 className={styles.headerTitle}>Clubhouse</h1>
-          <button className={styles.shareButton}>
-            <Share2 size={18} />
-          </button>
-        </div>
-      </header>
-
       <main className={`container ${styles.mainContent}`}>
         <div>
           <h2 className={styles.pageTitle}>Review Your Scorecard</h2>

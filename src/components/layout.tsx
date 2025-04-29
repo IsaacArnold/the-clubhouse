@@ -1,4 +1,6 @@
 import { ReactNode } from "react";
+import Navigation from "./Navigation/Navigation";
+import styles from "./layout.module.css";
 
 interface Props {
     children?: ReactNode
@@ -7,9 +9,8 @@ interface Props {
 export default function Layout({ children }: Props) {
     return (
       <>
-        {/* Navbar here */}
-        <main>{children}</main>
-        {/* Footer here */}
+        <Navigation />
+        <main className={styles.main}>{children}</main>
       </>
     );
 }

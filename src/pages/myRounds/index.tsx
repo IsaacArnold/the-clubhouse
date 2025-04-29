@@ -128,19 +128,6 @@ const MyRounds = () => {
 
   return (
     <div className={styles.myRoundsContainer}>
-      <header className={styles.header}>
-        <div className='container'>
-          <div className={styles.headerContent}>
-            <Link href='/dashboard' className={styles.backLink}>
-              <ArrowLeft size={18} />
-              <span>Dashboard</span>
-            </Link>
-            <h1 className={styles.headerTitle}>Clubhouse</h1>
-            <div style={{ width: "24px" }}></div> {/* Spacer for alignment */}
-          </div>
-        </div>
-      </header>
-
       <main className={`container ${styles.mainContent}`}>
         <h2 className={styles.pageTitle}>My Rounds</h2>
         {myRounds && myRounds.length === 0 ? (
