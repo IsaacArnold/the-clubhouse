@@ -1,8 +1,8 @@
 "use client";
 
+import { initFirebase } from "firebaseConfig";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import styles from "../../pages/SignIn.module.css";
-import { initFirebase } from "firebaseConfig";
 
 const GoogleBtn = () => {
   initFirebase();

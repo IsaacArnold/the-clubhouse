@@ -22,6 +22,10 @@ import styles from "./ConfigureRound.module.css";
 import { ArrowLeft, Flag, GlobeIcon as GolfBall } from "lucide-react";
 
 const RoundConfigure = () => {
+  initFirebase();
+  const auth = getAuth();
+  const [user, loading] = useAuthState(auth);
+
   const [courseNames, setCourseNames] = useState<DocumentData[]>([]);
   const [selectedCourseName, setSelectedCourseName] = useState<string>("");
   const [roundName, setRoundName] = useState("");
@@ -34,10 +38,6 @@ const RoundConfigure = () => {
   const { updateSelectedCourseID } = useSelectedCourseIDStore();
 
   const router = useRouter();
-
-  initFirebase();
-  const auth = getAuth();
-  const [user, loading] = useAuthState(auth);
 
   useEffect(() => {
     setRoundDate(moment().format("DD/MM/YYYY"));

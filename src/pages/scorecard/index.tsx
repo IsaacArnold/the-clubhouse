@@ -2,7 +2,7 @@
 
 import { useCurrentRoundStore } from "@/store/store";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { database } from "firebaseConfig";
+import { database, initFirebase } from "firebaseConfig";
 import { useEffect, useState } from "react";
 import type { UserScore } from "@/types/userScore";
 import { ArrowLeft, Flag, Share2, Trophy } from "lucide-react";
@@ -11,6 +11,7 @@ import styles from "./Scorecard.module.css";
 import { useRouter } from "next/router";
 
 const Scorecard = () => {
+  initFirebase();
   const [currentRoundName, setCurrentRoundName] = useState<string>("");
   const [courseName, setCourseName] = useState<string>("");
   const [coursePar, setCoursePar] = useState<number>(0);

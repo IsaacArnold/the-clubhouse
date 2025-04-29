@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-
+import { initFirebase } from "firebaseConfig";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useCurrentRoundStore } from "@/store/store";
@@ -10,6 +10,7 @@ import styles from "./HoleNumber.module.css";
 import { ArrowLeft, ArrowRight, Check, Flag } from "lucide-react";
 
 const HolePage = () => {
+  initFirebase();
   const router = useRouter();
   const { holeNumber } = router.query;
 
