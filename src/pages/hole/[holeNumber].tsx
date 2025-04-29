@@ -8,7 +8,6 @@ import { useCurrentRoundStore } from "@/store/store";
 import type { UserScore } from "@/types/userScore";
 import styles from "./HoleNumber.module.css";
 import { ArrowLeft, ArrowRight, Check, Flag } from "lucide-react";
-import Link from "next/link";
 
 const HolePage = () => {
   const router = useRouter();
@@ -121,19 +120,6 @@ const HolePage = () => {
 
   return (
     <div className={styles.holeContainer}>
-      <header className={styles.header}>
-        <div className='container'>
-          <div className={styles.headerContent}>
-            <Link href='/scorecard' className={styles.backLink}>
-              <ArrowLeft size={18} />
-              <span>Scorecard</span>
-            </Link>
-            <h1 className={styles.headerTitle}>Clubhouse</h1>
-            <div style={{ width: "24px" }}></div> {/* Spacer for alignment */}
-          </div>
-        </div>
-      </header>
-
       <main className={`container ${styles.mainContent}`}>
         <div className={styles.holeCard}>
           <div className={styles.holeHeader}>

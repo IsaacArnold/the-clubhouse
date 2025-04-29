@@ -4,38 +4,8 @@
   background-color: var(--primaryWhite);
 }
 
-.header {
-  background-color: var(--primaryGreen);
-  color: white;
-  padding: 0.75rem;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.headerContent {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.backLink {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  color: white;
-  text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.headerTitle {
-  font-size: 1.125rem;
-  font-weight: 700;
-}
-
 .mainContent {
-  padding: 1.5rem 0;
+  padding: 1.5rem 1rem;
 }
 
 .pageTitle {
@@ -121,22 +91,24 @@
   background-color: var(--primaryGreen);
   padding: 1rem;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .roundName {
-  color: white;
+  color: var(--primaryWhite);
   font-size: 1.125rem;
   font-weight: 600;
 }
 
 .roundDate {
-  color: white;
-  font-size: 0.875rem;
+  color: var(--primaryWhite);
+  font-size: 0.75rem;
   background-color: rgba(255, 255, 255, 0.2);
   padding: 0.25rem 0.5rem;
-  border-radius: 9999px;
+  border-radius: 50px;
+  margin-top: 5px;
 }
 
 .roundContent {
@@ -180,6 +152,23 @@
   font-size: 1rem;
   font-weight: 600;
   color: var(--primaryText);
+}
+
+/* Score value colors */
+.birdieValue {
+  color: var(--primaryGreen);
+}
+
+.parValue {
+  color: var(--primaryText);
+}
+
+.bogeyValue {
+  color: #f57c00;
+}
+
+.doubleValue {
+  color: #d32f2f;
 }
 
 .loadingContainer {

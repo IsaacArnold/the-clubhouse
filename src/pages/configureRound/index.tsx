@@ -206,24 +206,9 @@ const RoundConfigure = () => {
 
   return (
     <div className={styles.configureContainer}>
-      <header className={styles.header}>
-        <div className='container'>
-          <div className={styles.headerContent}>
-            <Link href='/dashboard' className={styles.backLink}>
-              <ArrowLeft size={18} />
-              <span>Dashboard</span>
-            </Link>
-            <h1 className={styles.headerTitle}>Clubhouse</h1>
-            <div style={{ width: "24px" }}></div> {/* Spacer for alignment */}
-          </div>
-        </div>
-      </header>
-
       <main className={`container ${styles.mainContent}`}>
         <div className={styles.configureCard}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>Start a New Round</h2>
-          </div>
+          <h2 className={styles.cardTitle}>Start a New Round</h2>
           <div className={styles.cardContent}>
             <div className={styles.formGroup}>
               <label htmlFor='courseSelect' className={styles.formLabel}>

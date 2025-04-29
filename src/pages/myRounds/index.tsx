@@ -7,7 +7,7 @@ import { type SetStateAction, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import styles from "./MyRounds.module.css";
 import Link from "next/link";
-import { ArrowLeft, GlobeIcon as GolfBall, MapPin, Plus } from "lucide-react";
+import { GlobeIcon as GolfBall, MapPin, Plus } from "lucide-react";
 import { useRouter } from "next/router";
 
 const MyRounds = () => {
@@ -57,6 +57,32 @@ const MyRounds = () => {
       getUserRounds();
     }
   }, [userID]);
+
+  // Calculate relative to par for a round
+  const calculateRelativeToPar = (round: DocumentData) => {
+    if (!round.scores || round.scores.length === 0) return 0;
+
+    // Get valid scores (scores that have been entered)
+    const validScores = round.scores.filter((score: any) => score.score && score.score > 0);
+    if (validScores.length === 0) return 0;
+
+    // Calculate total score
+    const totalScore = validScores.reduce((sum: number, score: any) => sum + score.score, 0);
+
+    // Calculate total par for the holes that have valid scores
+    const totalPar = validScores.reduce((sum: number, score: any) => {
+      return sum + (score.holePar || 0);
+    }, 0);
+
+    // Return the difference
+    return totalScore - totalPar;
+  };
+
+  // Format relative to par for display
+  const formatRelativeToPar = (relativeToPar: number) => {
+    if (relativeToPar === 0) return "E";
+    return relativeToPar > 0 ? `+${relativeToPar}` : relativeToPar.toString();
+  };
 
   if (loading || isLoading) {
     return (
@@ -121,26 +147,17 @@ const MyRounds = () => {
 
   // Function to view a round's scorecard
   const viewRound = (roundId: string) => {
-    console.log("roundId", roundId);
     // Navigate to the scorecard page with the round ID
     router.push(`/scorecard?roundId=${roundId}`);
   };
 
+  const subtitle =
+    myRounds && myRounds.length === 0
+      ? "You haven't played any rounds yet"
+      : "Check out your rounds below";
+
   return (
     <div className={styles.myRoundsContainer}>
-      <header className={styles.header}>
-        <div className='container'>
-          <div className={styles.headerContent}>
-            <Link href='/dashboard' className={styles.backLink}>
-              <ArrowLeft size={18} />
-              <span>Dashboard</span>
-            </Link>
-            <h1 className={styles.headerTitle}>Clubhouse</h1>
-            <div style={{ width: "24px" }}></div> {/* Spacer for alignment */}
-          </div>
-        </div>
-      </header>
-
       <main className={`container ${styles.mainContent}`}>
         <h2 className={styles.pageTitle}>My Rounds</h2>
         {myRounds && myRounds.length === 0 ? (
@@ -148,17 +165,27 @@ const MyRounds = () => {
             <div className={styles.emptyStateIcon}>
               <GolfBall size={48} />
             </div>
-            <p className={styles.emptyStateText}>You haven't played any rounds yet.</p>
+            <p className={styles.emptyStateText}>Start tracking your golf game today</p>
             <Link href='/configureRound' className={styles.startButton}>
               <Plus size={16} />
               Start a new round
             </Link>
           </div>
         ) : (
-          <>
-            <p className={styles.pageSubtitle}>Check out your rounds below</p>
-            <div className={styles.roundsList}>
-              {myRounds.map((round) => (
+          <div className={styles.roundsList}>
+            {myRounds.map((round) => {
+              const relativeToPar = calculateRelativeToPar(round);
+              const relativeToParFormatted = formatRelativeToPar(relativeToPar);
+
+              // Determine the CSS class based on the relative to par value
+              let relativeToParClass = styles.parValue; // Default (even par)
+              if (relativeToPar < 0) {
+                relativeToParClass = styles.birdieValue; // Under par
+              } else if (relativeToPar > 0) {
+                relativeToParClass = relativeToPar > 3 ? styles.doubleValue : styles.bogeyValue; // Over par
+              }
+
+              return (
                 <div key={round.roundID} className={styles.roundCard}>
                   <div className={styles.roundCardLink} onClick={() => viewRound(round.id)}>
                     <div className={styles.roundHeader}>
@@ -188,9 +215,9 @@ const MyRounds = () => {
                             <p className={styles.statValue}>{round.scores.length}</p>
                           </div>
                           <div className={styles.statItem}>
-                            <p className={styles.statLabel}>Best</p>
-                            <p className={styles.statValue}>
-                              {Math.min(...round.scores.map((s: any) => s.score || 999))}
+                            <p className={styles.statLabel}>To Par</p>
+                            <p className={`${styles.statValue} ${relativeToParClass}`}>
+                              {relativeToParFormatted}
                             </p>
                           </div>
                         </div>
@@ -198,9 +225,9 @@ const MyRounds = () => {
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </>
+              );
+            })}
+          </div>
         )}
       </main>
     </div>

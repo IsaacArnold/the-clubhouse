@@ -1,0 +1,152 @@
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: 4rem;
+}
+
+.navBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--primaryGreen);
+  overflow: hidden;
+}
+
+.navImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.2;
+}
+
+.navOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(75, 157, 111, 0.9), rgba(75, 157, 111, 0.95));
+}
+
+.container {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primaryWhite);
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+  color: var(--primaryWhite);
+}
+
+.button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.menuContainer {
+  position: relative;
+}
+
+.menuButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+  color: var(--primaryWhite);
+}
+
+.menuButton:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.menuDropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 0.5rem;
+  width: 12rem;
+  background-color: var(--primaryWhite);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 0.25rem 0;
+  overflow: hidden;
+  z-index: 60;
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: var(--primaryText);
+  transition: background-color 0.2s;
+  text-decoration: none;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menuLink:hover {
+  background-color: var(--lightenedGreen);
+}
+
+.menuIcon {
+  color: var(--primaryGreen);
+}
+
+/* Space for content below fixed nav */
+.contentSpacer {
+  padding-top: 4rem;
+}
+
+@media (min-width: 640px) {
+  .nav {
+    height: 4.5rem;
+  }
+
+  .contentSpacer {
+    padding-top: 4.5rem;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+  }
+}
