@@ -9,22 +9,12 @@ import styles from "./Navigation.module.css";
 import { getAuth } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-interface NavigationProps {
-  pageTitle?: string;
-  pageSubtitle?: string;
-  showBackButton?: boolean;
-}
-
-const Navigation = ({ pageTitle, pageSubtitle, showBackButton = true }: NavigationProps) => {
+const Navigation = () => {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const auth = getAuth();
   const [user] = useAuthState(auth);
-
-  const handleBack = () => {
-    router.back();
-  };
 
   const signOut = async () => {
     await auth.signOut();
@@ -77,15 +67,11 @@ const Navigation = ({ pageTitle, pageSubtitle, showBackButton = true }: Navigati
           <div className={styles.navOverlay}></div>
         </div>
         <div className={styles.container}>
-          {showBackButton ? (
-            <button onClick={handleBack} className={styles.button}>
-              <ArrowLeft size={20} />
-            </button>
-          ) : (
-            <div className={styles.logoContainer}>
-              <span className={styles.logo}>Clubhouse</span>
-            </div>
-          )}
+          <div className={styles.logoContainer}>
+            <Link href='/'>
+              <span className={styles.logo}>The Clubhouse</span>
+            </Link>
+          </div>
 
           <div className={styles.menuContainer}>
             <button onClick={() => setIsMenuOpen(!isMenuOpen)} className={styles.menuButton}>
@@ -129,18 +115,6 @@ const Navigation = ({ pageTitle, pageSubtitle, showBackButton = true }: Navigati
           </div>
         </div>
       </nav>
-
-      {pageTitle && (
-        <header className={styles.pageHeader}>
-          <div className={styles.pageHeaderContainer}>
-            <h1 className={styles.pageTitle}>{pageTitle}</h1>
-            {pageSubtitle && <p className={styles.pageSubtitle}>{pageSubtitle}</p>}
-          </div>
-        </header>
-      )}
-
-      {/* Add this to pages that don't have a pageTitle prop */}
-      {!pageTitle && <div className={styles.contentSpacer}></div>}
     </>
   );
 };
