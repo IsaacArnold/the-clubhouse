@@ -3,49 +3,13 @@
   background-color: var(--primaryWhite);
 }
 
-.header {
-  background-color: var(--primaryGreen);
-  color: white;
-  padding: 0.75rem;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.headerContent {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.backLink {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  color: white;
-  text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.headerTitle {
-  font-size: 1.125rem;
-  font-weight: 700;
-}
-
 .mainContent {
-  padding: 1.5rem 0;
+  padding: 1.5rem 1rem;
 }
 
 .configureCard {
   border-radius: 0.5rem;
   overflow: hidden;
-}
-
-.cardHeader {
-  background-color: var(--primaryGreen);
-  color: white;
-  padding: 1rem;
 }
 
 .cardTitle {
@@ -54,7 +18,8 @@
 }
 
 .cardContent {
-  padding: 1.5rem 1rem;
+  padding: 1.5rem 0;
+  max-width: 343px;
 }
 
 .formGroup {
@@ -132,7 +97,7 @@
 
 .primaryButton {
   background-color: var(--primaryGreen);
-  color: white;
+  color: var(--primaryWhite);
   border: none;
   width: 100%;
   padding: 0.75rem;

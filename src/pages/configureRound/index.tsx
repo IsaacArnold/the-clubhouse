@@ -208,9 +208,7 @@ const RoundConfigure = () => {
     <div className={styles.configureContainer}>
       <main className={`container ${styles.mainContent}`}>
         <div className={styles.configureCard}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>Start a New Round</h2>
-          </div>
+          <h2 className={styles.cardTitle}>Start a New Round</h2>
           <div className={styles.cardContent}>
             <div className={styles.formGroup}>
               <label htmlFor='courseSelect' className={styles.formLabel}>

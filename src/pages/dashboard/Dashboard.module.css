@@ -3,21 +3,6 @@
   background-color: var(--primaryWhite);
 }
 
-.header {
-  background-color: var(--primaryGreen);
-  color: white;
-  padding: 0.75rem;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.headerTitle {
-  font-size: 1.125rem;
-  font-weight: 700;
-  text-align: center;
-}
-
 .mainContent {
   padding: 0;
 }
@@ -25,17 +10,6 @@
 .welcomeCard {
   border-radius: 0.5rem;
   overflow: hidden;
-}
-
-.welcomeHeader {
-  background-color: var(--primaryGreen);
-  color: white;
-  padding: 1rem;
-}
-
-.welcomeTitle {
-  font-size: 1.25rem;
-  font-weight: 600;
 }
 
 .welcomeContent {
