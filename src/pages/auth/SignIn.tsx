@@ -104,14 +104,14 @@ const SignIn = () => {
           priority
         />
         <div className={styles.overlay}>
-          <h1 className={styles.appTitle}>Clubhouse</h1>
+          <h1 className={styles.appTitle}>The Clubhouse</h1>
           <p className={styles.appTagline}>Light the candle!</p>
         </div>
       </div>
 
       <div className={styles.contentCard}>
         <div className={styles.cardHeader}>
-          <h2 className={styles.cardTitle}>Welcome to Clubhouse</h2>
+          <h2 className={styles.cardTitle}>Welcome to The Clubhouse</h2>
           <p className={styles.cardSubtitle}>
             Sign in to track your golf scores and improve your game
           </p>
@@ -148,7 +148,7 @@ const SignIn = () => {
         <div className={styles.divider}>or</div>
 
         <div className={styles.registerSection}>
-          <p className={styles.registerText}>New to Clubhouse?</p>
+          <p className={styles.registerText}>New to The Clubhouse?</p>
           <button className={styles.registerButton} onClick={registerWithGoogle}>
             Register with Google
           </button>
