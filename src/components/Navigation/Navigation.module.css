@@ -117,6 +117,11 @@
   color: var(--primaryText);
   transition: background-color 0.2s;
   text-decoration: none;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
 }
 
 .menuLink:hover {
@@ -127,41 +132,21 @@
   color: var(--primaryGreen);
 }
 
-.pageHeader {
-  margin-top: 4rem;
-  padding: 1.25rem 1rem;
-  background-color: white;
-  border-bottom: 1px solid var(--primaryGray);
-}
-
-.pageHeaderContainer {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.pageTitle {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primaryText);
-}
-
-.pageSubtitle {
-  font-size: 0.875rem;
-  color: var(--lightenedGray);
-  margin-top: 0.25rem;
-}
-
-/* Space for content below fixed nav and page header */
+/* Space for content below fixed nav */
 .contentSpacer {
   padding-top: 4rem;
 }
 
 @media (min-width: 640px) {
-  .pageHeader {
-    padding: 1.5rem 1rem;
+  .nav {
+    height: 4.5rem;
   }
 
-  .pageTitle {
-    font-size: 1.75rem;
+  .contentSpacer {
+    padding-top: 4.5rem;
+  }
+
+  .logo {
+    font-size: 1.5rem;
   }
 }

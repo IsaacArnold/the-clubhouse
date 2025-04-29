@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, ArrowLeft, Home, ClipboardList, Flag, LogOut } from "lucide-react";
+import { Menu, Home, ClipboardList, Flag, LogOut } from "lucide-react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -12,6 +12,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 const Navigation = () => {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const auth = getAuth();
   const [user] = useAuthState(auth);
 
@@ -39,20 +40,33 @@ const Navigation = () => {
     <>
       <nav className={styles.nav}>
         <div className={styles.navBackground}>
-          {/* Golf course image in the background */}
-          <Image
-            src='/images/bunker.png' // Adjust path as needed
-            alt=''
-            fill
-            className={styles.navImage}
-            priority
-          />
+          {/* Try multiple possible image paths */}
+          {!imageError && (
+            <Image
+              src='/images/bunker.jpg'
+              alt=''
+              fill
+              className={styles.navImage}
+              priority
+              onError={() => setImageError(true)}
+            />
+          )}
+          {imageError && (
+            <Image
+              src='/bunker.jpg'
+              alt=''
+              fill
+              className={styles.navImage}
+              priority
+              onError={() => console.log("Both image paths failed")}
+            />
+          )}
           <div className={styles.navOverlay}></div>
         </div>
         <div className={styles.container}>
           <div className={styles.logoContainer}>
-            <Link href='/'>
-              <span className={styles.logo}>The Clubhouse</span>
+            <Link href='/dashboard'>
+              <span className={styles.logo}>Clubhouse</span>
             </Link>
           </div>
 
@@ -69,7 +83,7 @@ const Navigation = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <Home size={16} className={styles.menuIcon} />
-                  Dashboard
+                  Home
                 </Link>
                 <Link
                   href='/myRounds'

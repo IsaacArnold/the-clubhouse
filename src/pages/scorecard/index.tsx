@@ -1,13 +1,14 @@
 "use client";
 
 import { useCurrentRoundStore } from "@/store/store";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { database } from "firebaseConfig";
 import { useEffect, useState } from "react";
 import type { UserScore } from "@/types/userScore";
 import { ArrowLeft, Flag, Share2, Trophy } from "lucide-react";
 import Link from "next/link";
 import styles from "./Scorecard.module.css";
+import { useRouter } from "next/router";
 
 const Scorecard = () => {
   const [currentRoundName, setCurrentRoundName] = useState<string>("");
@@ -16,10 +17,11 @@ const Scorecard = () => {
   const [totalDistance, setTotalDistance] = useState<number>(0);
   const [userScores, setUserScores] = useState<UserScore[]>([]);
   const [date, setDate] = useState<string>(new Date().toLocaleDateString());
-  const [weather, setWeather] = useState<string>("Sunny, 24°C");
 
   const roundDocumentID = useCurrentRoundStore((state) => state.roundDocumentID);
   const courseHoleDetails = useCurrentRoundStore((state) => state.courseHoleDetails);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchRoundDetails = async () => {
@@ -49,11 +51,6 @@ const Scorecard = () => {
           if (roundData.date) {
             setDate(roundData.date);
           }
-
-          // Set weather if available in roundData
-          if (roundData.weather) {
-            setWeather(roundData.weather);
-          }
         } else {
           console.error("No such round document!");
         }
@@ -81,6 +78,26 @@ const Scorecard = () => {
       alert("Final scores submitted successfully!");
     } catch (error) {
       console.error("Error submitting final scores: ", error);
+    }
+  };
+
+  const handleDeleteRound = async () => {
+    if (!roundDocumentID) return;
+
+    // Confirm before deleting
+    if (
+      window.confirm("Are you sure you want to delete this round? This action cannot be undone.")
+    ) {
+      try {
+        const docRef = doc(database, "rounds", roundDocumentID);
+        await deleteDoc(docRef);
+        alert("Round deleted successfully!");
+        // Navigate back to My Rounds page
+        router.push("/myRounds");
+      } catch (error) {
+        console.error("Error deleting round: ", error);
+        alert("Failed to delete round. Please try again.");
+      }
     }
   };
 
@@ -174,12 +191,22 @@ const Scorecard = () => {
 
   return (
     <div className={styles.scorecardContainer}>
+      <header className={styles.header}>
+        <div className='container flex items-center justify-between'>
+          <Link href='/dashboard' className={styles.headerLink}>
+            <ArrowLeft size={18} />
+            <span className='font-medium text-sm'>Back</span>
+          </Link>
+          <h1 className={styles.headerTitle}>Clubhouse</h1>
+          <button className={styles.shareButton}>
+            <Share2 size={18} />
+          </button>
+        </div>
+      </header>
+
       <main className={`container ${styles.mainContent}`}>
         <div>
           <h2 className={styles.pageTitle}>Review Your Scorecard</h2>
-          <p className={styles.pageSubtitle}>
-            {date} • {weather}
-          </p>
         </div>
 
         <div className={styles.card}>
@@ -218,8 +245,7 @@ const Scorecard = () => {
             <div className='flex items-center justify-between'>
               <h3 className={styles.cardTitle}>Round Summary</h3>
               <div className='flex items-center gap-1'>
-                <Trophy size={16} />
-                <span className='font-bold'>{stats.totalScore}</span>
+                <span className='font-bold'>Total: {stats.totalScore}</span>
               </div>
             </div>
           </div>
@@ -331,7 +357,9 @@ const Scorecard = () => {
           <button className={styles.primaryButton} onClick={handleSubmitFinalScores}>
             Submit Final Scores
           </button>
-          <button className={styles.secondaryButton}>Share Round</button>
+          <button className={styles.secondaryButton} onClick={handleDeleteRound}>
+            Delete Round
+          </button>
         </div>
       </main>
     </div>
