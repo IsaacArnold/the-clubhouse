@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import styles from "./Dashboard.module.css";
 import { ClipboardList, Flag, LogOut } from "lucide-react";
+import Head from "next/head";
 
 const Dashboard = () => {
   initFirebase();
@@ -84,48 +85,56 @@ const Dashboard = () => {
   const firstName = user?.displayName?.split(" ")[0] || "";
 
   return (
-    <div className={styles.dashboardContainer}>
-      <main className={`container ${styles.mainContent}`}>
-        <div className={styles.welcomeCard}>
-          <div className={styles.welcomeContent}>
-            <h2 className={styles.greeting}>Welcome back, {firstName}</h2>
+    <>
+      <Head>
+        <title>Dashboard</title>
+        <meta name='description' content='View your golf stats and start tracking your rounds' />
+        <link rel='icon' href='/favicon.ico' />
+      </Head>
 
-            <div className={styles.actionsGrid}>
-              <div className={styles.actionCard}>
-                <Link href='/myRounds' className={styles.actionLink}>
-                  <div className={styles.actionIcon}>
-                    <ClipboardList size={20} />
-                  </div>
-                  <h3 className={styles.actionTitle}>View My Rounds</h3>
-                  <p className={styles.actionDescription}>
-                    See your past rounds and track your progress
-                  </p>
-                </Link>
+      <div className={styles.dashboardContainer}>
+        <main className={`container ${styles.mainContent}`}>
+          <div className={styles.welcomeCard}>
+            <div className={styles.welcomeContent}>
+              <h2 className={styles.greeting}>Welcome back, {firstName}</h2>
+
+              <div className={styles.actionsGrid}>
+                <div className={styles.actionCard}>
+                  <Link href='/myRounds' className={styles.actionLink}>
+                    <div className={styles.actionIcon}>
+                      <ClipboardList size={20} />
+                    </div>
+                    <h3 className={styles.actionTitle}>View My Rounds</h3>
+                    <p className={styles.actionDescription}>
+                      See your past rounds and track your progress
+                    </p>
+                  </Link>
+                </div>
+
+                <div className={styles.actionCard}>
+                  <Link href='/configureRound' className={styles.actionLink}>
+                    <div className={styles.actionIcon}>
+                      <Flag size={20} />
+                    </div>
+                    <h3 className={styles.actionTitle}>Start a Round</h3>
+                    <p className={styles.actionDescription}>
+                      Begin a new round and track your scores
+                    </p>
+                  </Link>
+                </div>
               </div>
 
-              <div className={styles.actionCard}>
-                <Link href='/configureRound' className={styles.actionLink}>
-                  <div className={styles.actionIcon}>
-                    <Flag size={20} />
-                  </div>
-                  <h3 className={styles.actionTitle}>Start a Round</h3>
-                  <p className={styles.actionDescription}>
-                    Begin a new round and track your scores
-                  </p>
-                </Link>
-              </div>
+              <button onClick={signOut} className={styles.signOutButton}>
+                <div className='flex items-center justify-center gap-2'>
+                  <LogOut size={16} />
+                  <span>Sign Out</span>
+                </div>
+              </button>
             </div>
-
-            <button onClick={signOut} className={styles.signOutButton}>
-              <div className='flex items-center justify-center gap-2'>
-                <LogOut size={16} />
-                <span>Sign Out</span>
-              </div>
-            </button>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 };
 

@@ -19,7 +19,8 @@ import { type ChangeEvent, type SetStateAction, useEffect, useState } from "reac
 import { useAuthState } from "react-firebase-hooks/auth";
 import { v4 as uuidv4 } from "uuid";
 import styles from "./ConfigureRound.module.css";
-import { ArrowLeft, Flag, GlobeIcon as GolfBall } from "lucide-react";
+import { Flag, GlobeIcon as GolfBall } from "lucide-react";
+import Head from "next/head";
 
 const RoundConfigure = () => {
   initFirebase();
@@ -201,73 +202,78 @@ const RoundConfigure = () => {
     setRoundName(e.target.value);
   };
 
-  // Get first name only for greeting
-  const firstName = user?.displayName?.split(" ")[0] || "";
-
   return (
-    <div className={styles.configureContainer}>
-      <main className={`container ${styles.mainContent}`}>
-        <div className={styles.configureCard}>
-          <h2 className={styles.cardTitle}>Start a New Round</h2>
-          <div className={styles.cardContent}>
-            <div className={styles.formGroup}>
-              <label htmlFor='courseSelect' className={styles.formLabel}>
-                Select a Course
-              </label>
-              <select
-                id='courseSelect'
-                className={`${styles.formSelect} ${courseError ? styles.formSelectError : ""}`}
-                onChange={(e) => {
-                  getAndSetSelectedCourseNameAndID(e);
-                }}
-                value={courseID.toString()}
-              >
-                <option value='' disabled selected>
-                  Choose a golf course
-                </option>
-                {courseNames.map((course) => (
-                  <option value={course.courseID} key={course.courseID}>
-                    {course.courseName}
+    <>
+      <Head>
+        <title>Configure Round</title>
+        <meta name='description' content='Set up your round - get swinging!' />
+        <link rel='icon' href='/favicon.ico' />
+      </Head>
+
+      <div className={styles.configureContainer}>
+        <main className={`container ${styles.mainContent}`}>
+          <div className={styles.configureCard}>
+            <h2 className={styles.cardTitle}>Start a New Round</h2>
+            <div className={styles.cardContent}>
+              <div className={styles.formGroup}>
+                <label htmlFor='courseSelect' className={styles.formLabel}>
+                  Select a Course
+                </label>
+                <select
+                  id='courseSelect'
+                  className={`${styles.formSelect} ${courseError ? styles.formSelectError : ""}`}
+                  onChange={(e) => {
+                    getAndSetSelectedCourseNameAndID(e);
+                  }}
+                  value={courseID.toString()}
+                >
+                  <option value='' disabled selected>
+                    Choose a golf course
                   </option>
-                ))}
-              </select>
-              {courseError && <p className={styles.errorText}>{courseError}</p>}
-            </div>
+                  {courseNames.map((course) => (
+                    <option value={course.courseID} key={course.courseID}>
+                      {course.courseName}
+                    </option>
+                  ))}
+                </select>
+                {courseError && <p className={styles.errorText}>{courseError}</p>}
+              </div>
 
-            <div className={styles.formGroup}>
-              <label htmlFor='roundName' className={styles.formLabel}>
-                Round Name
-              </label>
-              <input
-                id='roundName'
-                type='text'
-                className={`${styles.formInput} ${roundNameError ? styles.formInputError : ""}`}
-                placeholder='e.g., Morning round with friends'
-                value={roundName}
-                onChange={handleRoundNameChange}
-              />
-              {roundNameError && <p className={styles.errorText}>{roundNameError}</p>}
-            </div>
+              <div className={styles.formGroup}>
+                <label htmlFor='roundName' className={styles.formLabel}>
+                  Round Name
+                </label>
+                <input
+                  id='roundName'
+                  type='text'
+                  className={`${styles.formInput} ${roundNameError ? styles.formInputError : ""}`}
+                  placeholder='e.g., Morning round with friends'
+                  value={roundName}
+                  onChange={handleRoundNameChange}
+                />
+                {roundNameError && <p className={styles.errorText}>{roundNameError}</p>}
+              </div>
 
-            <div className={styles.formGroup}>
-              <div className={styles.formLabel}>Date</div>
-              <div className={styles.dateDisplay}>{roundDate}</div>
-            </div>
+              <div className={styles.formGroup}>
+                <div className={styles.formLabel}>Date</div>
+                <div className={styles.dateDisplay}>{roundDate}</div>
+              </div>
 
-            <div className={styles.buttonGroup}>
-              <button className={styles.primaryButton} onClick={onRoundConfigSubmit}>
-                <GolfBall size={16} className='inline-block mr-2' />
-                Start Round
-              </button>
-              <Link href='/myRounds' className={styles.secondaryButton}>
-                <Flag size={16} className='inline-block mr-2' />
-                View My Rounds
-              </Link>
+              <div className={styles.buttonGroup}>
+                <button className={styles.primaryButton} onClick={onRoundConfigSubmit}>
+                  <GolfBall size={16} className='inline-block mr-2' />
+                  Start Round
+                </button>
+                <Link href='/myRounds' className={styles.secondaryButton}>
+                  <Flag size={16} className='inline-block mr-2' />
+                  View My Rounds
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 };
 
