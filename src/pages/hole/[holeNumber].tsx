@@ -1,13 +1,15 @@
 "use client";
 
 import type React from "react";
-import { initFirebase } from "firebaseConfig";
+import { database, initFirebase } from "firebaseConfig";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useCurrentRoundStore } from "@/store/store";
 import type { UserScore } from "@/types/userScore";
 import styles from "./HoleNumber.module.css";
 import { ArrowLeft, ArrowRight, Check, Flag } from "lucide-react";
+import { doc, updateDoc } from "@firebase/firestore";
+import Head from "next/head";
 
 const HolePage = () => {
   initFirebase();
@@ -17,9 +19,11 @@ const HolePage = () => {
   const courseHoleDetails = useCurrentRoundStore((state) => state.courseHoleDetails);
   const userScores = useCurrentRoundStore((state) => state.userScores);
   const setUserScores = useCurrentRoundStore((state) => state.setUserScores);
+  const roundDocumentID = useCurrentRoundStore((state) => state.roundDocumentID);
 
   const [holeDetails, setHoleDetails] = useState<any>(null);
   const [score, setScore] = useState<number | "">("");
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (holeNumber && courseHoleDetails.length > 0) {
@@ -70,37 +74,65 @@ const HolePage = () => {
     router.push(`/hole/${targetHole}`);
   };
 
-  const handleSubmitScore = () => {
+  const handleSubmitScore = async () => {
     if (score === "") {
       alert("Please enter your score");
       return;
     }
 
-    // Save the score locally in Zustand
-    const updatedScores: UserScore[] = [...userScores];
-    const existingIndex: number = updatedScores.findIndex(
-      (hole: UserScore) => hole.holeNumber === Number.parseInt(holeNumber as string, 10)
+    // Create a new score object
+    const newScore: UserScore = {
+      holeNumber: Number.parseInt(holeNumber as string, 10),
+      holePar: holeDetails.holePar,
+      score: Number(score),
+    };
+
+    // Create a new array with the updated scores
+    const updatedScores = [...userScores];
+    const existingIndex = updatedScores.findIndex(
+      (hole) => hole.holeNumber === newScore.holeNumber
     );
 
     if (existingIndex !== -1) {
-      updatedScores[existingIndex] = { ...updatedScores[existingIndex], score: Number(score) };
+      // Update existing score
+      updatedScores[existingIndex] = newScore;
     } else {
-      updatedScores.push({
-        holeNumber: Number.parseInt(holeNumber as string, 10),
-        holePar: holeDetails.holePar,
-        score: Number(score),
-      });
+      // Add new score
+      updatedScores.push(newScore);
     }
 
+    // Update the Zustand store
     setUserScores(updatedScores);
 
-    // Navigate to the next hole
-    const nextHole = Number.parseInt(holeNumber as string, 10) + 1;
-    if (nextHole <= courseHoleDetails.length) {
-      navigateToHole(nextHole);
+    const isLastHole = Number.parseInt(holeNumber as string, 10) === courseHoleDetails.length;
+
+    // Only save to database if this is the last hole
+    if (isLastHole) {
+      if (roundDocumentID) {
+        try {
+          setIsSaving(true);
+          const docRef = doc(database, "rounds", roundDocumentID);
+          await updateDoc(docRef, {
+            scores: updatedScores,
+          });
+          console.log("All scores saved to database successfully");
+          setIsSaving(false);
+
+          // Navigate to the scorecard page with the round ID
+          router.push(`/scorecard?roundId=${roundDocumentID}`);
+        } catch (error) {
+          console.error("Error saving scores to database:", error);
+          setIsSaving(false);
+          alert("There was an error saving your scores. Please try again.");
+        }
+      } else {
+        console.error("No roundDocumentID available, scores not saved to database");
+        alert("Unable to save scores: Round ID not found");
+      }
     } else {
-      alert("You have completed the round!");
-      router.push("/scorecard"); // Redirect to the scorecard page after the last hole
+      // If not the last hole, just navigate to the next hole
+      const nextHole = Number.parseInt(holeNumber as string, 10) + 1;
+      navigateToHole(nextHole);
     }
   };
 
@@ -120,82 +152,90 @@ const HolePage = () => {
   const isLastHole = Number.parseInt(holeNumber as string, 10) === courseHoleDetails.length;
 
   return (
-    <div className={styles.holeContainer}>
-      <main className={`container ${styles.mainContent}`}>
-        <div className={styles.holeCard}>
-          <div className={styles.holeHeader}>
-            <h2 className={styles.holeTitle}>
-              <Flag size={20} />
-              Hole {holeDetails.holeNumber}
-            </h2>
-            <span className={styles.holePar}>Par {holeDetails.holePar}</span>
-          </div>
-          <div className={styles.holeContent}>
-            <div className={styles.holeDetailsGrid}>
-              <div className={styles.detailCard}>
-                <p className={styles.detailLabel}>Distance</p>
-                <p className={styles.detailValue}>{holeDetails.holeDistance}m</p>
-              </div>
-              {/* <div className={styles.detailCard}>
+    <>
+      <Head>
+        <title>Hole {holeNumber}</title>
+        <meta name='description' content='View your golf stats and start tracking your rounds' />
+        <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />
+        <link rel='icon' href='/golf-cart-icon_96.png' />
+      </Head>
+      <div className={styles.holeContainer}>
+        <main className={`container ${styles.mainContent}`}>
+          <div className={styles.holeCard}>
+            <div className={styles.holeHeader}>
+              <h2 className={styles.holeTitle}>
+                <Flag size={20} />
+                Hole {holeDetails.holeNumber}
+              </h2>
+              <span className={styles.holePar}>Par {holeDetails.holePar}</span>
+            </div>
+            <div className={styles.holeContent}>
+              <div className={styles.holeDetailsGrid}>
+                <div className={styles.detailCard}>
+                  <p className={styles.detailLabel}>Distance</p>
+                  <p className={styles.detailValue}>{holeDetails.holeDistance}m</p>
+                </div>
+                {/* <div className={styles.detailCard}>
                 <p className={styles.detailLabel}>Par</p>
                 <p className={styles.detailValue}>
                   {holeDetails.holePar}
                 </p>
               </div> */}
-              <div className={styles.detailCard}>
-                <p className={styles.detailLabel}>Stroke Index</p>
-                <p className={styles.detailValue}>{holeDetails.strokeIndex}</p>
+                <div className={styles.detailCard}>
+                  <p className={styles.detailLabel}>Stroke Index</p>
+                  <p className={styles.detailValue}>{holeDetails.strokeIndex}</p>
+                </div>
+              </div>
+
+              <div className={styles.scoreSection}>
+                <label htmlFor='scoreInput' className={styles.scoreLabel}>
+                  Enter your score for this hole:
+                </label>
+                <input
+                  type='number'
+                  id='scoreInput'
+                  className={styles.scoreInput}
+                  value={score}
+                  onChange={handleScoreChange}
+                  placeholder='Score'
+                  min='1'
+                />
+              </div>
+
+              <div className={styles.navigationButtons}>
+                <button
+                  className={`${styles.navButton} ${styles.prevButton}`}
+                  onClick={() =>
+                    navigateToHole(Math.max(1, Number.parseInt(holeNumber as string, 10) - 1))
+                  }
+                  disabled={isFirstHole}
+                  style={{ opacity: isFirstHole ? 0.5 : 1 }}
+                >
+                  <ArrowLeft size={16} />
+                  Previous
+                </button>
+                <button
+                  className={`${styles.navButton} ${styles.submitButton}`}
+                  onClick={handleSubmitScore}
+                >
+                  <Check size={16} />
+                  {isLastHole ? "Finish" : "Save & next"}
+                </button>
+                <button
+                  className={`${styles.navButton} ${styles.nextButton}`}
+                  onClick={() => navigateToHole(Number.parseInt(holeNumber as string, 10) + 1)}
+                  disabled={isLastHole}
+                  style={{ opacity: isLastHole ? 0.5 : 1 }}
+                >
+                  Next
+                  <ArrowRight size={16} />
+                </button>
               </div>
             </div>
-
-            <div className={styles.scoreSection}>
-              <label htmlFor='scoreInput' className={styles.scoreLabel}>
-                Enter your score for this hole:
-              </label>
-              <input
-                type='number'
-                id='scoreInput'
-                className={styles.scoreInput}
-                value={score}
-                onChange={handleScoreChange}
-                placeholder='Score'
-                min='1'
-              />
-            </div>
-
-            <div className={styles.navigationButtons}>
-              <button
-                className={`${styles.navButton} ${styles.prevButton}`}
-                onClick={() =>
-                  navigateToHole(Math.max(1, Number.parseInt(holeNumber as string, 10) - 1))
-                }
-                disabled={isFirstHole}
-                style={{ opacity: isFirstHole ? 0.5 : 1 }}
-              >
-                <ArrowLeft size={16} />
-                Previous
-              </button>
-              <button
-                className={`${styles.navButton} ${styles.submitButton}`}
-                onClick={handleSubmitScore}
-              >
-                <Check size={16} />
-                {isLastHole ? "Finish" : "Save & next"}
-              </button>
-              <button
-                className={`${styles.navButton} ${styles.nextButton}`}
-                onClick={() => navigateToHole(Number.parseInt(holeNumber as string, 10) + 1)}
-                disabled={isLastHole}
-                style={{ opacity: isLastHole ? 0.5 : 1 }}
-              >
-                Next
-                <ArrowRight size={16} />
-              </button>
-            </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 };
 
