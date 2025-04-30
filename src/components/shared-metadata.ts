@@ -41,8 +41,8 @@ export const baseMetadata: Metadata = {
     creator: "@theclubhousegolf",
   },
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
+    icon: "/golf-cart-icon_96.png",
+    shortcut: "/golf-cart-icon_16.png.png",
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",

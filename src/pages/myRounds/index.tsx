@@ -165,7 +165,7 @@ const MyRounds = () => {
           name='description'
           content='View your past golf rounds and track your progress over time'
         />
-        <link rel='icon' href='/favicon.ico' />
+        <link rel='icon' href='/golf-cart-icon_96.png' />
       </Head>
 
       <div className={styles.myRoundsContainer}>

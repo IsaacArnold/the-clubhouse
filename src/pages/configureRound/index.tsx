@@ -207,7 +207,7 @@ const RoundConfigure = () => {
       <Head>
         <title>Configure Round</title>
         <meta name='description' content='Set up your round - get swinging!' />
-        <link rel='icon' href='/favicon.ico' />
+        <link rel='icon' href='/golf-cart-icon_96.png' />
       </Head>
 
       <div className={styles.configureContainer}>

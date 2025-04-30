@@ -89,7 +89,7 @@ const Dashboard = () => {
       <Head>
         <title>Dashboard</title>
         <meta name='description' content='View your golf stats and start tracking your rounds' />
-        <link rel='icon' href='/favicon.ico' />
+        <link rel='icon' href='/golf-cart-icon_96.png' />
       </Head>
 
       <div className={styles.dashboardContainer}>
