@@ -1,11 +1,20 @@
 "use client";
 
 import { useCurrentRoundStore } from "@/store/store";
-import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { database, initFirebase } from "firebaseConfig";
 import { useEffect, useState } from "react";
 import type { UserScore } from "@/types/userScore";
-import { ArrowLeft, Flag, Share2, Trophy } from "lucide-react";
+import { ArrowLeft, Flag, Share2 } from "lucide-react";
 import Link from "next/link";
 import styles from "./Scorecard.module.css";
 import { useRouter } from "next/router";
@@ -18,61 +27,127 @@ const Scorecard = () => {
   const [totalDistance, setTotalDistance] = useState<number>(0);
   const [userScores, setUserScores] = useState<UserScore[]>([]);
   const [date, setDate] = useState<string>(new Date().toLocaleDateString());
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const roundDocumentID = useCurrentRoundStore((state) => state.roundDocumentID);
-  const courseHoleDetails = useCurrentRoundStore((state) => state.courseHoleDetails);
+  const {
+    updateRoundID,
+    updateRoundDocID,
+    setCourseHoleDetails,
+    setUserScores: setStoreUserScores,
+    courseHoleDetails,
+  } = useCurrentRoundStore();
 
   const router = useRouter();
+  const { roundId } = router.query;
 
   useEffect(() => {
-    const fetchRoundDetails = async () => {
-      if (!roundDocumentID) return;
+    // Only proceed if roundId is available from the URL
+    if (!roundId) return;
 
+    const fetchRoundDetails = async () => {
+      setLoading(true);
       try {
-        // Fetch the round document from Firestore
-        const docRef = doc(database, "rounds", roundDocumentID);
+        // Use the roundId from the URL query parameter
+        const docRef = doc(database, "rounds", roundId as string);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const roundData = docSnap.data();
+
+          // Update the Zustand store with the current round's document ID
+          updateRoundDocID(roundId as string);
+
+          // Update the Zustand store with the round ID
+          if (roundData.roundID) {
+            updateRoundID(roundData.roundID);
+          }
+
           setCurrentRoundName(roundData.roundName);
           setCourseName(roundData.courseName);
 
-          // Calculate coursePar and totalDistance from courseHoleDetails
-          const par = courseHoleDetails.reduce((sum, hole) => sum + hole.holePar, 0);
-          const distance = courseHoleDetails.reduce((sum, hole) => sum + hole.holeDistance, 0);
-
-          setCoursePar(par);
-          setTotalDistance(distance);
-
-          // Populate userScores from Zustand store
-          setUserScores(useCurrentRoundStore.getState().userScores);
+          // Set user scores from the document if available
+          if (roundData.scores && Array.isArray(roundData.scores)) {
+            setUserScores(roundData.scores);
+            setStoreUserScores(roundData.scores);
+          } else {
+            setUserScores([]);
+            setStoreUserScores([]);
+          }
 
           // Set date if available in roundData
           if (roundData.date) {
             setDate(roundData.date);
+          } else if (roundData.roundDate) {
+            setDate(roundData.roundDate);
+          }
+
+          // Fetch course details using the courseID from the round
+          if (roundData.courseID) {
+            const courseQuery = query(
+              collection(database, "courses"),
+              where("courseID", "==", roundData.courseID)
+            );
+            const courseSnapshot = await getDocs(courseQuery);
+
+            if (!courseSnapshot.empty) {
+              const courseData = courseSnapshot.docs[0].data();
+
+              // Update the course hole details in the store
+              if (courseData.holeDetails && Array.isArray(courseData.holeDetails)) {
+                setCourseHoleDetails(courseData.holeDetails);
+
+                // Calculate coursePar and totalDistance from courseHoleDetails
+                const par = courseData.holeDetails.reduce((sum, hole) => sum + hole.holePar, 0);
+                const distance = courseData.holeDetails.reduce(
+                  (sum, hole) => sum + hole.holeDistance,
+                  0
+                );
+
+                setCoursePar(par);
+                setTotalDistance(distance);
+              }
+            }
           }
         } else {
           console.error("No such round document!");
         }
       } catch (error) {
         console.error("Error fetching round details:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchRoundDetails();
-  }, [roundDocumentID, courseHoleDetails]);
+  }, [roundId, updateRoundDocID, updateRoundID, setCourseHoleDetails, setStoreUserScores]);
 
   const handleScoreChange = (holeNumber: number, score: number) => {
     // Update the score for the specific hole
-    setUserScores((prevScores) =>
-      prevScores.map((hole) => (hole.holeNumber === holeNumber ? { ...hole, score } : hole))
+    const updatedScores = userScores.map((hole) =>
+      hole.holeNumber === holeNumber ? { ...hole, score } : hole
     );
+
+    // If the score doesn't exist yet, add it
+    if (!updatedScores.some((score) => score.holeNumber === holeNumber)) {
+      const holeDetails = courseHoleDetails.find((h) => h.holeNumber === holeNumber);
+      if (holeDetails) {
+        updatedScores.push({
+          holeNumber,
+          holePar: holeDetails.holePar,
+          score,
+        });
+      }
+    }
+
+    setUserScores(updatedScores);
+    setStoreUserScores(updatedScores);
   };
 
   const handleSubmitFinalScores = async () => {
+    if (!roundId) return;
+
     try {
-      const docRef = doc(database, "rounds", roundDocumentID);
+      const docRef = doc(database, "rounds", roundId as string);
       await updateDoc(docRef, {
         scores: userScores,
       });
@@ -84,14 +159,14 @@ const Scorecard = () => {
   };
 
   const handleDeleteRound = async () => {
-    if (!roundDocumentID) return;
+    if (!roundId) return;
 
     // Confirm before deleting
     if (
       window.confirm("Are you sure you want to delete this round? This action cannot be undone.")
     ) {
       try {
-        const docRef = doc(database, "rounds", roundDocumentID);
+        const docRef = doc(database, "rounds", roundId as string);
         await deleteDoc(docRef);
         alert("Round deleted successfully!");
         // Navigate back to My Rounds page
@@ -191,19 +266,53 @@ const Scorecard = () => {
   // Get the statistics
   const stats = calculateStats();
 
+  if (loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingIcon}>
+          <svg
+            className='animate-spin h-8 w-8'
+            xmlns='http://www.w3.org/2000/svg'
+            fill='none'
+            viewBox='0 0 24 24'
+          >
+            <circle
+              className='opacity-25'
+              cx='12'
+              cy='12'
+              r='10'
+              stroke='currentColor'
+              strokeWidth='4'
+            ></circle>
+            <path
+              className='opacity-75'
+              fill='currentColor'
+              d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+            ></path>
+          </svg>
+        </div>
+        <p className={styles.loadingText}>Loading scorecard...</p>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.scorecardContainer}>
       <main className={`container ${styles.mainContent}`}>
         <div>
           <h2 className={styles.pageTitle}>Review Your Scorecard</h2>
+          <p className={styles.pageSubtitle}>{date}</p>
         </div>
-
         <div className={styles.card}>
           <div className={styles.cardHeader}>
             <div className='flex items-center justify-between'>
               <h3 className={styles.cardTitle}>Round Details</h3>
               <span className={styles.parBadge}>
-                {stats.relativeToPar > 0 ? `+${stats.relativeToPar}` : stats.relativeToPar}
+                {stats.relativeToPar > 0
+                  ? `+${stats.relativeToPar}`
+                  : stats.relativeToPar === 0
+                  ? "E"
+                  : stats.relativeToPar}
               </span>
             </div>
           </div>
