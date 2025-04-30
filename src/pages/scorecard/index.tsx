@@ -209,19 +209,19 @@ const Scorecard = () => {
           </div>
           <div className={styles.cardContent}>
             <div className={styles.detailsGrid}>
-              <div>
+              <div className={styles.detailsGridContainer}>
                 <p className={styles.detailLabel}>Course</p>
                 <p className={styles.detailValue}>{courseName}</p>
               </div>
-              <div>
+              <div className={styles.detailsGridContainer}>
                 <p className={styles.detailLabel}>Round Name</p>
                 <p className={styles.detailValue}>{currentRoundName}</p>
               </div>
-              <div>
+              <div className={styles.detailsGridContainer}>
                 <p className={styles.detailLabel}>Course Par</p>
                 <p className={styles.detailValue}>{coursePar}</p>
               </div>
-              <div>
+              <div className={styles.detailsGridContainer}>
                 <p className={styles.detailLabel}>Course Distance</p>
                 <p className={styles.detailValue}>{totalDistance}m</p>
               </div>
@@ -285,7 +285,7 @@ const Scorecard = () => {
                       <p className={styles.detailValue}>{hole.holeDistance}m</p>
                     </div>
                     <div>
-                      <p className={styles.detailLabel}>SI</p>
+                      <p className={styles.detailLabel}>Stroke index</p>
                       <p className={styles.detailValue}>{hole.strokeIndex}</p>
                     </div>
                   </div>

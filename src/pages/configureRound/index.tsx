@@ -264,14 +264,6 @@ const RoundConfigure = () => {
                 View My Rounds
               </Link>
             </div>
-
-            <button
-              onClick={signOut}
-              className={styles.tertiaryButton}
-              style={{ marginTop: "1rem" }}
-            >
-              Sign Out
-            </button>
           </div>
         </div>
       </main>
