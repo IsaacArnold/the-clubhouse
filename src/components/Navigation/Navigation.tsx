@@ -42,27 +42,6 @@ const Navigation = () => {
     <>
       <nav className={styles.nav}>
         <div className={styles.navBackground}>
-          {/* Try multiple possible image paths */}
-          {!imageError && (
-            <Image
-              src='/images/bunker.jpg'
-              alt=''
-              fill
-              className={styles.navImage}
-              priority
-              onError={() => setImageError(true)}
-            />
-          )}
-          {imageError && (
-            <Image
-              src='/bunker.jpg'
-              alt=''
-              fill
-              className={styles.navImage}
-              priority
-              onError={() => console.log("Both image paths failed")}
-            />
-          )}
           <div className={styles.navOverlay}></div>
         </div>
         <div className={styles.container}>

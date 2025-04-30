@@ -125,7 +125,7 @@ const Dashboard = () => {
               </div>
 
               <button onClick={signOut} className={styles.signOutButton}>
-                <div className='flex items-center justify-center gap-2'>
+                <div className='flex items-center justify-center gap-1'>
                   <LogOut size={16} />
                   <span>Sign Out</span>
                 </div>
