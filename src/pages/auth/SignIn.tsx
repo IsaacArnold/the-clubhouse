@@ -1,12 +1,14 @@
 "use client";
 
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-import { initFirebase } from "firebaseConfig";
+import { database, initFirebase } from "firebaseConfig";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import styles from "./SignIn.module.css";
 import bunkerImg from "../../images/bunker.jpg";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { useEffect } from "react";
 
 const SignIn = () => {
   initFirebase();
@@ -15,6 +17,40 @@ const SignIn = () => {
   // Tracks the auth state of the use. Only triggered when user signs in or out
   const [user, loading] = useAuthState(auth);
   const router = useRouter();
+
+  // Add user to database when they sign in
+  useEffect(() => {
+    if (user) {
+      generateNewUserOnDB();
+    }
+  }, [user]);
+
+  const generateNewUserOnDB = async () => {
+    const collectionRef = collection(database, "users");
+
+    const q = query(collectionRef, where("id", "==", user?.uid));
+    const snapshot = await getDocs(q);
+    let golfUser = null;
+
+    if (snapshot.empty) {
+      console.log("Doc doesn't exist, so we are going to create one");
+      golfUser = {
+        id: user?.uid,
+        name: user?.displayName,
+        email: user?.email,
+        createdAt: new Date(),
+        lastLogin: new Date(),
+      };
+      // Document doesn't exist, so we are going to add it
+      await addDoc(collectionRef, golfUser);
+    } else {
+      console.log("Doc does exist");
+      // Optionally update the lastLogin time
+      // const docRef = doc(database, "users", snapshot.docs[0].id);
+      // await updateDoc(docRef, { lastLogin: new Date() });
+      golfUser = snapshot.docs[0].data();
+    }
+  };
 
   if (loading) {
     return (
