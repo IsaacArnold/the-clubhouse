@@ -342,9 +342,7 @@ const Scorecard = () => {
           <div className={styles.cardHeader}>
             <div className='flex items-center justify-between'>
               <h3 className={styles.cardTitle}>Round Summary</h3>
-              <div className='flex items-center gap-1'>
-                <span className='font-bold'>Total: {stats.totalScore}</span>
-              </div>
+              <span className='font-bold'>Total: {stats.totalScore}</span>
             </div>
           </div>
           <div className={styles.cardContent}>

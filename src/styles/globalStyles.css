@@ -57,4 +57,12 @@ body {
   color: white;
 }
 
+.gap-1 {
+  gap: 1rem;
+}
+
+.gap-2 {
+  gap: 2rem;
+}
+
 /* Add any other global styles you need here */

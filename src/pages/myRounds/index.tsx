@@ -9,6 +9,7 @@ import styles from "./MyRounds.module.css";
 import Link from "next/link";
 import { GlobeIcon as GolfBall, MapPin, Plus } from "lucide-react";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const MyRounds = () => {
   initFirebase();
@@ -157,80 +158,91 @@ const MyRounds = () => {
       : "Check out your rounds below";
 
   return (
-    <div className={styles.myRoundsContainer}>
-      <main className={`container ${styles.mainContent}`}>
-        <h2 className={styles.pageTitle}>My Rounds</h2>
-        {myRounds && myRounds.length === 0 ? (
-          <div className={styles.emptyState}>
-            <div className={styles.emptyStateIcon}>
-              <GolfBall size={48} />
+    <>
+      <Head>
+        <title>My Rounds</title>
+        <meta
+          name='description'
+          content='View your past golf rounds and track your progress over time'
+        />
+        <link rel='icon' href='/favicon.ico' />
+      </Head>
+
+      <div className={styles.myRoundsContainer}>
+        <main className={`container ${styles.mainContent}`}>
+          <h2 className={styles.pageTitle}>My Rounds</h2>
+          {myRounds && myRounds.length === 0 ? (
+            <div className={styles.emptyState}>
+              <div className={styles.emptyStateIcon}>
+                <GolfBall size={48} />
+              </div>
+              <p className={styles.emptyStateText}>Start tracking your golf game today</p>
+              <Link href='/configureRound' className={styles.startButton}>
+                <Plus size={16} />
+                Start a new round
+              </Link>
             </div>
-            <p className={styles.emptyStateText}>Start tracking your golf game today</p>
-            <Link href='/configureRound' className={styles.startButton}>
-              <Plus size={16} />
-              Start a new round
-            </Link>
-          </div>
-        ) : (
-          <div className={styles.roundsList}>
-            {myRounds.map((round) => {
-              const relativeToPar = calculateRelativeToPar(round);
-              const relativeToParFormatted = formatRelativeToPar(relativeToPar);
+          ) : (
+            <div className={styles.roundsList}>
+              {myRounds.map((round) => {
+                const relativeToPar = calculateRelativeToPar(round);
+                const relativeToParFormatted = formatRelativeToPar(relativeToPar);
 
-              // Determine the CSS class based on the relative to par value
-              let relativeToParClass = styles.parValue; // Default (even par)
-              if (relativeToPar < 0) {
-                relativeToParClass = styles.birdieValue; // Under par
-              } else if (relativeToPar > 0) {
-                relativeToParClass = relativeToPar > 3 ? styles.doubleValue : styles.bogeyValue; // Over par
-              }
+                // Determine the CSS class based on the relative to par value
+                let relativeToParClass = styles.parValue; // Default (even par)
+                if (relativeToPar < 0) {
+                  relativeToParClass = styles.birdieValue; // Under par
+                } else if (relativeToPar > 0) {
+                  relativeToParClass = relativeToPar > 3 ? styles.doubleValue : styles.bogeyValue; // Over par
+                }
 
-              return (
-                <div key={round.roundID} className={styles.roundCard}>
-                  <div className={styles.roundCardLink} onClick={() => viewRound(round.id)}>
-                    <div className={styles.roundHeader}>
-                      <h3 className={styles.roundName}>{round.roundName}</h3>
-                      <span className={styles.roundDate}>{round.roundDate}</span>
-                    </div>
-                    <div className={styles.roundContent}>
-                      <div className={styles.courseInfo}>
-                        <MapPin size={16} className={styles.courseIcon} />
-                        <span className={styles.courseName}>{round.courseName}</span>
+                return (
+                  <div key={round.roundID} className={styles.roundCard}>
+                    <div className={styles.roundCardLink} onClick={() => viewRound(round.id)}>
+                      <div className={styles.roundHeader}>
+                        <h3 className={styles.roundName}>{round.roundName}</h3>
+                        <span className={styles.roundDate}>{round.roundDate}</span>
                       </div>
-
-                      {/* If you have score data, you can display stats here */}
-                      {round.scores && round.scores.length > 0 && (
-                        <div className={styles.roundStats}>
-                          <div className={styles.statItem}>
-                            <p className={styles.statLabel}>Total</p>
-                            <p className={styles.statValue}>
-                              {round.scores.reduce(
-                                (sum: number, score: any) => sum + (score.score || 0),
-                                0
-                              )}
-                            </p>
-                          </div>
-                          <div className={styles.statItem}>
-                            <p className={styles.statLabel}>Holes</p>
-                            <p className={styles.statValue}>{round.scores.length}</p>
-                          </div>
-                          <div className={styles.statItem}>
-                            <p className={styles.statLabel}>To Par</p>
-                            <p className={`${styles.statValue} ${relativeToParClass}`}>
-                              {relativeToParFormatted}
-                            </p>
-                          </div>
+                      <div className={styles.roundContent}>
+                        <div className={styles.courseInfo}>
+                          <MapPin size={16} className={styles.courseIcon} />
+                          <span className={styles.courseName}>{round.courseName}</span>
                         </div>
-                      )}
+
+                        {/* If you have score data, you can display stats here */}
+                        {round.scores && round.scores.length > 0 && (
+                          <div className={styles.roundStats}>
+                            <div className={styles.statItem}>
+                              <p className={styles.statLabel}>Total</p>
+                              <p className={styles.statValue}>
+                                {round.scores.reduce(
+                                  (sum: number, score: any) => sum + (score.score || 0),
+                                  0
+                                )}
+                              </p>
+                            </div>
+                            <div className={styles.statItem}>
+                              <p className={styles.statLabel}>Holes</p>
+                              <p className={styles.statValue}>{round.scores.length}</p>
+                            </div>
+                            <div className={styles.statItem}>
+                              <p className={styles.statLabel}>To Par</p>
+                              <p className={`${styles.statValue} ${relativeToParClass}`}>
+                                {relativeToParFormatted}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </main>
-    </div>
+                );
+              })}
+            </div>
+          )}
+        </main>
+      </div>
+    </>
   );
 };
 
