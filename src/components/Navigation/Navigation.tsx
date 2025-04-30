@@ -8,8 +8,10 @@ import Image from "next/image";
 import styles from "./Navigation.module.css";
 import { getAuth } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { initFirebase } from "firebaseConfig";
 
 const Navigation = () => {
+  initFirebase();
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [imageError, setImageError] = useState(false);
