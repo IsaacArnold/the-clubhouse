@@ -98,7 +98,7 @@ const SignIn = () => {
     <div className={styles.signInContainer}>
       <div className={styles.imageContainer}>
         <Image
-          src={bunkerImg || "/placeholder.svg"}
+          src={bunkerImg}
           alt='Golf course with bunker'
           className={styles.heroImage}
           priority

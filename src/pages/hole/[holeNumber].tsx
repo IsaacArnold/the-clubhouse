@@ -136,15 +136,15 @@ const HolePage = () => {
                 <p className={styles.detailLabel}>Distance</p>
                 <p className={styles.detailValue}>{holeDetails.holeDistance}m</p>
               </div>
+              {/* <div className={styles.detailCard}>
+                <p className={styles.detailLabel}>Par</p>
+                <p className={styles.detailValue}>
+                  {holeDetails.holePar}
+                </p>
+              </div> */}
               <div className={styles.detailCard}>
                 <p className={styles.detailLabel}>Stroke Index</p>
                 <p className={styles.detailValue}>{holeDetails.strokeIndex}</p>
-              </div>
-              <div className={styles.detailCard}>
-                <p className={styles.detailLabel}>Hole</p>
-                <p className={styles.detailValue}>
-                  {holeDetails.holeNumber} of {courseHoleDetails.length}
-                </p>
               </div>
             </div>
 
@@ -180,7 +180,7 @@ const HolePage = () => {
                 onClick={handleSubmitScore}
               >
                 <Check size={16} />
-                {isLastHole ? "Finish Round" : "Save & Next"}
+                {isLastHole ? "Finish" : "Save & next"}
               </button>
               <button
                 className={`${styles.navButton} ${styles.nextButton}`}

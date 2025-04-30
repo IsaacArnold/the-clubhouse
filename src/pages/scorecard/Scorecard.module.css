@@ -26,19 +26,6 @@
   font-weight: 700;
 }
 
-.shareButton {
-  color: white;
-  padding: 0.25rem;
-  height: 2rem;
-  width: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
 .mainContent {
   padding: 1.5rem 1rem;
 }
@@ -111,6 +98,10 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
+}
+
+.detailsGridContainer {
+  max-width: 150px;
 }
 
 .detailLabel {
@@ -407,4 +398,22 @@
 
 .secondaryButton:hover {
   background-color: rgba(229, 57, 53, 0.1);
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+}
+
+.loadingIcon {
+  color: var(--primaryGreen);
+}
+
+.loadingText {
+  font-size: 1.125rem;
+  color: var(--primaryText);
 }
