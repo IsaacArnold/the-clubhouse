@@ -19,7 +19,7 @@
 
 .cardContent {
   padding: 1.5rem 0;
-  max-width: 343px;
+  max-width: 400px;
 }
 
 .formGroup {
@@ -83,17 +83,26 @@
   margin-top: 0.25rem;
 }
 
-.dateDisplay {
-  font-size: 0.875rem;
-  color: var(--lightenedGray);
-  margin-top: 0.5rem;
+.dateInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dateIcon {
+  position: absolute;
+  left: 0.75rem;
+  color: var(--primaryGreen);
+  pointer-events: none;
 }
 
 .buttonGroup {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 4rem;
 }
 
 .primaryButton {

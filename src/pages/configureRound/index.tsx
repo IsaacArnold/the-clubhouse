@@ -19,7 +19,7 @@ import { type ChangeEvent, type SetStateAction, useEffect, useState } from "reac
 import { useAuthState } from "react-firebase-hooks/auth";
 import { v4 as uuidv4 } from "uuid";
 import styles from "./ConfigureRound.module.css";
-import { Flag, GlobeIcon as GolfBall } from "lucide-react";
+import { Calendar, Flag, GlobeIcon as GolfBall } from "lucide-react";
 import Head from "next/head";
 
 const RoundConfigure = () => {
@@ -32,6 +32,7 @@ const RoundConfigure = () => {
   const [roundName, setRoundName] = useState("");
   const [courseID, setCourseID] = useState<string>("");
   const [roundDate, setRoundDate] = useState<string>("");
+  const [dateInputValue, setDateInputValue] = useState<string>("");
   const [courseError, setCourseError] = useState<string>("");
   const [roundNameError, setRoundNameError] = useState<string>("");
   const { updateRoundID, updateRoundDocID, setCourseHoleDetails, setUserScores } =
@@ -41,7 +42,10 @@ const RoundConfigure = () => {
   const router = useRouter();
 
   useEffect(() => {
-    setRoundDate(moment().format("DD/MM/YYYY"));
+    // Set default date to today
+    const today = moment();
+    setRoundDate(today.format("DD/MM/YYYY"));
+    setDateInputValue(today.format("YYYY-MM-DD")); // Format for HTML date input
 
     const getGolfCourses = async () => {
       const golfCourses = query(collection(database, "courses"));
@@ -202,6 +206,17 @@ const RoundConfigure = () => {
     setRoundName(e.target.value);
   };
 
+  const handleDateChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const htmlDate = e.target.value; // Format: YYYY-MM-DD
+    setDateInputValue(htmlDate);
+
+    // Convert to the app's date format (DD/MM/YYYY) for storage
+    if (htmlDate) {
+      const formattedDate = moment(htmlDate).format("DD/MM/YYYY");
+      setRoundDate(formattedDate);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -255,8 +270,19 @@ const RoundConfigure = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <div className={styles.formLabel}>Date</div>
-                <div className={styles.dateDisplay}>{roundDate}</div>
+                <label htmlFor='roundDate' className={styles.formLabel}>
+                  Date
+                </label>
+                <div className={styles.dateInputWrapper}>
+                  <input
+                    id='roundDate'
+                    type='date'
+                    className={styles.formInput}
+                    value={dateInputValue}
+                    onChange={handleDateChange}
+                  />
+                </div>
+                <div className={styles.dateDisplay}>Selected: {roundDate}</div>
               </div>
 
               <div className={styles.buttonGroup}>

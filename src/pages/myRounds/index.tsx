@@ -173,9 +173,6 @@ const MyRounds = () => {
           <h2 className={styles.pageTitle}>My Rounds</h2>
           {myRounds && myRounds.length === 0 ? (
             <div className={styles.emptyState}>
-              <div className={styles.emptyStateIcon}>
-                <GolfBall size={48} />
-              </div>
               <p className={styles.emptyStateText}>Start tracking your golf game today</p>
               <Link href='/configureRound' className={styles.startButton}>
                 <Plus size={16} />
