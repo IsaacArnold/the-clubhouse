@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, Home, ClipboardList, Flag, LogOut } from "lucide-react";
+import { Menu, Home, ClipboardList, Flag, LogOut, User } from "lucide-react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -14,7 +14,6 @@ const Navigation = () => {
   initFirebase();
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [imageError, setImageError] = useState(false);
   const auth = getAuth();
   const [user] = useAuthState(auth);
 
@@ -47,7 +46,7 @@ const Navigation = () => {
         <div className={styles.container}>
           <div className={styles.logoContainer}>
             <Link href='/dashboard'>
-              <span className={styles.logo}>Clubhouse</span>
+              <span className={styles.logo}>The Clubhouse</span>
             </Link>
           </div>
 
@@ -81,6 +80,14 @@ const Navigation = () => {
                 >
                   <Flag size={16} className={styles.menuIcon} />
                   Start a Round
+                </Link>
+                <Link
+                  href='/profile'
+                  className={styles.menuLink}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <User size={16} className={styles.menuIcon} />
+                  Edit Profile
                 </Link>
                 {user && (
                   <button onClick={signOut} className={styles.menuLink}>

@@ -1,19 +1,48 @@
 "use client";
 
 import { getAuth } from "firebase/auth";
-import { initFirebase } from "firebaseConfig";
+import { database, initFirebase } from "firebaseConfig";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import styles from "./Dashboard.module.css";
 import { ClipboardList, Flag, LogOut } from "lucide-react";
 import Head from "next/head";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { useState, useEffect } from "react";
 
 const Dashboard = () => {
   initFirebase();
   const auth = getAuth();
-  const [user, loading] = useAuthState(auth);
   const router = useRouter();
+  const [user, loading] = useAuthState(auth);
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!user) return;
+
+      try {
+        const usersRef = collection(database, "users");
+        const q = query(usersRef, where("id", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          setUserName(userData.name || user.displayName?.split(" ")[0] || "");
+        } else {
+          // Fallback to Firebase Auth display name
+          setUserName(user.displayName?.split(" ")[0] || "");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        // Fallback to Firebase Auth display name
+        setUserName(user.displayName?.split(" ")[0] || "");
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
 
   if (loading) {
     return (
@@ -81,9 +110,6 @@ const Dashboard = () => {
     return auth.signOut();
   };
 
-  // Get first name only
-  const firstName = user?.displayName?.split(" ")[0] || "";
-
   return (
     <>
       <Head>
@@ -96,7 +122,7 @@ const Dashboard = () => {
         <main className={`container ${styles.mainContent}`}>
           <div className={styles.welcomeCard}>
             <div className={styles.welcomeContent}>
-              <h2 className={styles.greeting}>Welcome back, {firstName}</h2>
+              <h2 className={styles.greeting}>Welcome back, {userName}</h2>
 
               <div className={styles.actionsGrid}>
                 <div className={styles.actionCard}>
