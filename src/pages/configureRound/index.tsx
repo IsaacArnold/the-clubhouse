@@ -35,6 +35,11 @@ const RoundConfigure = () => {
   const [dateInputValue, setDateInputValue] = useState<string>("");
   const [courseError, setCourseError] = useState<string>("");
   const [roundNameError, setRoundNameError] = useState<string>("");
+  const [gameMode, setGameMode] = useState<string>("");
+  const [teamName, setTeamName] = useState<string>("");
+  const [teammates, setTeammates] = useState<{ userID: string; name: string }[]>([]);
+  const [teamCount, setTeamCount] = useState<number>(1);
+  const [searchResults, setSearchResults] = useState<{ userID: string; name: string }[]>([]);
   const { updateRoundID, updateRoundDocID, setCourseHoleDetails, setUserScores } =
     useCurrentRoundStore();
   const { updateSelectedCourseID } = useSelectedCourseIDStore();
@@ -59,6 +64,38 @@ const RoundConfigure = () => {
 
     getGolfCourses();
   }, []);
+
+  const handleGameModeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setGameMode(e.target.value);
+  };
+
+  const handleTeamCountChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const count = Math.min(3, Math.max(1, parseInt(e.target.value, 10)));
+    setTeamCount(count);
+    setTeammates(teammates.slice(0, count)); // Adjust teammates array
+  };
+
+  const handleSearchUsers = async (searchTerm: string) => {
+    const usersRef = collection(database, "users");
+    const q = query(
+      usersRef,
+      where("displayName", ">=", searchTerm),
+      where("displayName", "<=", searchTerm + "\uf8ff")
+    );
+    const querySnapshot = await getDocs(q);
+    setSearchResults(
+      querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return { userID: data.id, name: data.displayName };
+      })
+    );
+  };
+
+  const handleAddTeammate = (index: number, user: { userID: string; name: string }) => {
+    const updatedTeammates = [...teammates];
+    updatedTeammates[index] = user;
+    setTeammates(updatedTeammates);
+  };
 
   if (loading) {
     return (
@@ -142,11 +179,15 @@ const RoundConfigure = () => {
     const collectionRef = collection(database, "rounds");
     const newRoundDocRef = await addDoc(collectionRef, {
       roundName,
-      courseID: courseID,
+      courseID,
       courseName: selectedCourseName,
-      roundDate: roundDate,
+      roundDate,
       userID: user.uid,
       roundID: uuidv4(),
+      gameMode,
+      teamName,
+      teammates,
+      teamCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
       scores: [],
     });
 
@@ -174,10 +215,6 @@ const RoundConfigure = () => {
 
     setRoundName("");
     router.push(`/hole/1`);
-  };
-
-  const signOut = async () => {
-    return auth.signOut();
   };
 
   const getAndSetSelectedCourseNameAndID = (element: ChangeEvent<HTMLSelectElement>) => {
@@ -221,7 +258,7 @@ const RoundConfigure = () => {
     <>
       <Head>
         <title>Configure Round</title>
-        <meta name='description' content='Set up your round - get swinging!' />
+        <meta name='description' content='Set up your round - Gimme back my son!' />
         <link rel='icon' href='/golf-cart-icon_96.png' />
       </Head>
 
@@ -253,6 +290,80 @@ const RoundConfigure = () => {
                 </select>
                 {courseError && <p className={styles.errorText}>{courseError}</p>}
               </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor='gameMode' className={styles.formLabel}>
+                  Game Mode
+                </label>
+                <select
+                  id='gameMode'
+                  className={styles.formSelect}
+                  value={gameMode}
+                  onChange={handleGameModeChange}
+                >
+                  <option value=''>Select a game mode</option>
+                  <option value='Ambrose'>Ambrose</option>
+                  {/* Add more game modes here */}
+                </select>
+              </div>
+
+              {gameMode === "Ambrose" && (
+                <>
+                  <div className={styles.formGroup}>
+                    <label htmlFor='teamCount' className={styles.formLabel}>
+                      Number of Teammates
+                    </label>
+                    <input
+                      id='teamCount'
+                      type='number'
+                      min='1'
+                      max='3'
+                      value={teamCount}
+                      onChange={handleTeamCountChange}
+                      className={styles.formInput}
+                    />
+                  </div>
+
+                  {Array.from({ length: teamCount }).map((_, index) => (
+                    <div key={index} className={styles.formGroup}>
+                      <label htmlFor={`teammate-${index}`} className={styles.formLabel}>
+                        Teammate {index + 1}
+                      </label>
+                      <input
+                        id={`teammate-${index}`}
+                        type='text'
+                        className={styles.formInput}
+                        placeholder='Search for a user'
+                        onChange={(e) => handleSearchUsers(e.target.value)}
+                      />
+                      <ul className={styles.searchResults}>
+                        {searchResults.map((user) => (
+                          <li
+                            key={user.userID}
+                            onClick={() => handleAddTeammate(index, user)}
+                            className={styles.searchResultItem}
+                          >
+                            {user.name}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+
+                  <div className={styles.formGroup}>
+                    <label htmlFor='teamName' className={styles.formLabel}>
+                      Team Name
+                    </label>
+                    <input
+                      id='teamName'
+                      type='text'
+                      className={styles.formInput}
+                      value={teamName}
+                      onChange={(e) => setTeamName(e.target.value)}
+                    />
+                  </div>
+                </>
+              )}
 
               <div className={styles.formGroup}>
                 <label htmlFor='roundName' className={styles.formLabel}>
