@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import styles from "./Profile.module.css";
+import Head from "next/head";
 
 const ProfilePage = () => {
   initFirebase();
@@ -268,44 +269,51 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className={styles.profileContainer}>
-      <main>
-        <div className={styles.profileCard}>
-          <div className={styles.avatarSection}>
-            <div className={styles.avatarContainer}>
-              <div className={styles.avatar}>
-                {photoPreview ? (
-                  <Image
-                    src={photoPreview}
-                    alt='Profile preview'
-                    width={100}
-                    height={100}
-                    className={styles.avatarImage}
-                  />
-                ) : photoURL ? (
-                  <Image
-                    src={photoURL}
-                    alt='Profile'
-                    width={100}
-                    height={100}
-                    className={styles.avatarImage}
-                  />
-                ) : (
-                  <User size={40} />
-                )}
-              </div>
-              <div className={styles.avatarActions}>
-                <button
-                  type='button'
-                  onClick={triggerFileInput}
-                  className={styles.avatarButton}
-                  disabled={isUploading}
-                >
-                  <Camera size={16} />
-                  <span>{photoURL || photoPreview ? "Change" : "Upload"}</span>
-                </button>
-                {/* TODO: Remove button doesn't work */}
-                {/* {(photoURL || photoPreview) && (
+    <>
+      <Head>
+        <title>{displayName}'s Profile</title>
+        <meta name='description' content='Edit your The Clubhouse profile' />
+        <link rel='icon' href='/golf-cart-icon_96.png' />
+      </Head>
+
+      <div className={styles.profileContainer}>
+        <main className={"container"}>
+          <div className={styles.profileCard}>
+            <div className={styles.avatarSection}>
+              <div className={styles.avatarContainer}>
+                <div className={styles.avatar}>
+                  {photoPreview ? (
+                    <Image
+                      src={photoPreview}
+                      alt='Profile preview'
+                      width={100}
+                      height={100}
+                      className={styles.avatarImage}
+                    />
+                  ) : photoURL ? (
+                    <Image
+                      src={photoURL}
+                      alt='Profile'
+                      width={100}
+                      height={100}
+                      className={styles.avatarImage}
+                    />
+                  ) : (
+                    <User size={40} />
+                  )}
+                </div>
+                <div className={styles.avatarActions}>
+                  <button
+                    type='button'
+                    onClick={triggerFileInput}
+                    className={styles.avatarButton}
+                    disabled={isUploading}
+                  >
+                    <Camera size={16} />
+                    <span>{photoURL || photoPreview ? "Change" : "Upload"}</span>
+                  </button>
+                  {/* TODO: Remove button doesn't work */}
+                  {/* {(photoURL || photoPreview) && (
                   <button
                     type='button'
                     onClick={handleRemovePhoto}
@@ -316,52 +324,53 @@ const ProfilePage = () => {
                     <span>Remove</span>
                   </button>
                 )} */}
+                  <input
+                    ref={fileInputRef}
+                    type='file'
+                    accept='image/*'
+                    onChange={handleFileChange}
+                    className={styles.fileInput}
+                  />
+                </div>
+                {isUploading && <p className={styles.uploadingText}>Uploading image...</p>}
+              </div>
+            </div>
+
+            <form onSubmit={handleUpdateProfile} className={styles.profileForm}>
+              <div className={styles.formGroup}>
+                <label htmlFor='displayName' className={styles.formLabel}>
+                  Display Name
+                </label>
                 <input
-                  ref={fileInputRef}
-                  type='file'
-                  accept='image/*'
-                  onChange={handleFileChange}
-                  className={styles.fileInput}
+                  id='displayName'
+                  type='text'
+                  className={styles.formInput}
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder='Your name'
                 />
               </div>
-              {isUploading && <p className={styles.uploadingText}>Uploading image...</p>}
-            </div>
+
+              {updateError && <p className={styles.errorText}>{updateError}</p>}
+              {updateSuccess && <p className={styles.successText}>Profile updated successfully!</p>}
+
+              <div className={styles.buttonGroup}>
+                <button
+                  type='submit'
+                  className={styles.primaryButton}
+                  disabled={isUpdating || isUploading}
+                >
+                  {isUpdating ? "Updating..." : "Save Changes"}
+                </button>
+                <Link href='/dashboard' className={styles.secondaryButton}>
+                  Cancel
+                </Link>
+              </div>
+            </form>
           </div>
-
-          <form onSubmit={handleUpdateProfile} className={styles.profileForm}>
-            <div className={styles.formGroup}>
-              <label htmlFor='displayName' className={styles.formLabel}>
-                Display Name
-              </label>
-              <input
-                id='displayName'
-                type='text'
-                className={styles.formInput}
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder='Your name'
-              />
-            </div>
-
-            {updateError && <p className={styles.errorText}>{updateError}</p>}
-            {updateSuccess && <p className={styles.successText}>Profile updated successfully!</p>}
-
-            <div className={styles.buttonGroup}>
-              <button
-                type='submit'
-                className={styles.primaryButton}
-                disabled={isUpdating || isUploading}
-              >
-                {isUpdating ? "Updating..." : "Save Changes"}
-              </button>
-              <Link href='/dashboard' className={styles.secondaryButton}>
-                Cancel
-              </Link>
-            </div>
-          </form>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 };
 

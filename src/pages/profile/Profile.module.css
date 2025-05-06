@@ -1,4 +1,5 @@
 .profileContainer {
+  min-height: 100vh;
   background-color: var(--primaryWhite);
   padding: 1.5rem 1rem;
 }
