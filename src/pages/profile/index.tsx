@@ -43,7 +43,7 @@ const ProfilePage = () => {
 
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
-          setDisplayName(userData.name || "");
+          setDisplayName(userData.displayName || "");
           setOriginalName(userData.name || "");
           setPhotoURL(userData.photoURL || "");
           setUserDocId(querySnapshot.docs[0].id);
@@ -243,14 +243,14 @@ const ProfilePage = () => {
       // Update the user document in Firestore
       const userDocRef = doc(database, "users", userDocId);
       await updateDoc(userDocRef, {
-        name: displayName,
+        name: originalName,
+        displayName: displayName,
         photoURL: updatedPhotoURL,
         lastUpdated: new Date(),
       });
 
       // Update successful
       setUpdateSuccess(true);
-      setOriginalName(displayName);
       setPhotoURL(updatedPhotoURL);
       setPhotoFile(null);
       setPhotoPreview(null);

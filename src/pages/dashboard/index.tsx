@@ -31,16 +31,16 @@ const Dashboard = () => {
 
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
-          setUserName(userData.name || user.displayName?.split(" ")[0] || "");
+          setUserName(userData.displayName || user.name?.split(" ")[0] || "");
           setUserPhoto(userData.photoURL || null);
         } else {
           // Fallback to Firebase Auth display name
-          setUserName(user.displayName?.split(" ")[0] || "");
+          setUserName(user.name?.split(" ")[0] || "");
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
         // Fallback to Firebase Auth display name
-        setUserName(user.displayName?.split(" ")[0] || "");
+        setUserName(user.name?.split(" ")[0] || "");
       }
     };
 
