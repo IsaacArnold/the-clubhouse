@@ -17,11 +17,17 @@
   text-align: center;
 }
 
+.welcomeProfileContent {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+}
+
 .greeting {
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--primaryText);
-  margin-bottom: 1.5rem;
   text-align: left;
 }
 

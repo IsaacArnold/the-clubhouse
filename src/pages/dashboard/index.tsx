@@ -125,18 +125,20 @@ const Dashboard = () => {
         <main className={`container ${styles.mainContent}`}>
           <div className={styles.welcomeCard}>
             <div className={styles.welcomeContent}>
-              {userPhoto && (
-                <div className={styles.welcomePhoto}>
-                  <Image
-                    src={userPhoto}
-                    alt='Profile'
-                    width={60}
-                    height={60}
-                    className={styles.welcomePhotoImg}
-                  />
-                </div>
-              )}
-              <h2 className={styles.greeting}>Welcome back, {userName}</h2>
+              <div className={styles.welcomeProfileContent}>
+                {userPhoto && (
+                  <div className={styles.welcomePhoto}>
+                    <Image
+                      src={userPhoto}
+                      alt='Profile'
+                      width={60}
+                      height={60}
+                      className={styles.welcomePhotoImg}
+                    />
+                  </div>
+                )}
+                <h2 className={styles.greeting}>Welcome back, {userName}</h2>
+              </div>
 
               <div className={styles.actionsGrid}>
                 <div className={styles.actionCard}>
