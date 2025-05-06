@@ -10,6 +10,7 @@ import { ClipboardList, Flag, LogOut } from "lucide-react";
 import Head from "next/head";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 const Dashboard = () => {
   initFirebase();
@@ -17,6 +18,7 @@ const Dashboard = () => {
   const router = useRouter();
   const [user, loading] = useAuthState(auth);
   const [userName, setUserName] = useState("");
+  const [userPhoto, setUserPhoto] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -30,6 +32,7 @@ const Dashboard = () => {
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
           setUserName(userData.name || user.displayName?.split(" ")[0] || "");
+          setUserPhoto(userData.photoURL || null);
         } else {
           // Fallback to Firebase Auth display name
           setUserName(user.displayName?.split(" ")[0] || "");
@@ -122,6 +125,17 @@ const Dashboard = () => {
         <main className={`container ${styles.mainContent}`}>
           <div className={styles.welcomeCard}>
             <div className={styles.welcomeContent}>
+              {userPhoto && (
+                <div className={styles.welcomePhoto}>
+                  <Image
+                    src={userPhoto}
+                    alt='Profile'
+                    width={60}
+                    height={60}
+                    className={styles.welcomePhotoImg}
+                  />
+                </div>
+              )}
               <h2 className={styles.greeting}>Welcome back, {userName}</h2>
 
               <div className={styles.actionsGrid}>

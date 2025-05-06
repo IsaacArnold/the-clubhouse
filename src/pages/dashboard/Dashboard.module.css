@@ -25,6 +25,20 @@
   text-align: left;
 }
 
+.welcomePhoto {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--primaryGreen);
+}
+
+.welcomePhotoImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .actionsGrid {
   display: grid;
   grid-template-columns: 1fr;

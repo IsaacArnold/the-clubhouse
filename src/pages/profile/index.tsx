@@ -4,11 +4,13 @@ import type React from "react";
 
 import { getAuth } from "firebase/auth";
 import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
-import { database, initFirebase } from "firebaseConfig";
-import { ArrowLeft, User } from "lucide-react";
+import { getDownloadURL, ref, uploadBytes, deleteObject } from "firebase/storage";
+import { database, storage, initFirebase } from "firebaseConfig";
+import { Camera, Trash2, User } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import styles from "./Profile.module.css";
 
@@ -17,13 +19,18 @@ const ProfilePage = () => {
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [displayName, setDisplayName] = useState("");
   const [originalName, setOriginalName] = useState("");
+  const [photoURL, setPhotoURL] = useState("");
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [updateError, setUpdateError] = useState("");
   const [userDocId, setUserDocId] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -38,6 +45,7 @@ const ProfilePage = () => {
           const userData = querySnapshot.docs[0].data();
           setDisplayName(userData.name || "");
           setOriginalName(userData.name || "");
+          setPhotoURL(userData.photoURL || "");
           setUserDocId(querySnapshot.docs[0].id);
         }
       } catch (error) {
@@ -109,6 +117,101 @@ const ProfilePage = () => {
     );
   }
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (limit to 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setUpdateError("Image size must be less than 5MB");
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith("image/")) {
+      setUpdateError("File must be an image");
+      return;
+    }
+
+    setPhotoFile(file);
+
+    // Create a preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhotoPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemovePhoto = () => {
+    setPhotoFile(null);
+    setPhotoPreview(null);
+
+    // If we're removing an existing photo (not just a preview)
+    if (photoURL && !photoPreview) {
+      setIsUploading(true);
+
+      // Delete the photo from storage
+      const deletePhotoFromStorage = async () => {
+        try {
+          // Extract the file name from the URL
+          const fileName = photoURL.split("/").pop()?.split("?")[0];
+          if (fileName) {
+            const photoRef = ref(storage, `profile-photos/${user.uid}/${fileName}`);
+            await deleteObject(photoRef);
+          }
+
+          // Update the user document
+          const userDocRef = doc(database, "users", userDocId);
+          await updateDoc(userDocRef, {
+            photoURL: "",
+            lastUpdated: new Date(),
+          });
+
+          setPhotoURL("");
+          setUpdateSuccess(true);
+          setTimeout(() => setUpdateSuccess(false), 3000);
+        } catch (error) {
+          console.error("Error removing photo:", error);
+          setUpdateError("Failed to remove photo. Please try again.");
+        } finally {
+          setIsUploading(false);
+        }
+      };
+
+      deletePhotoFromStorage();
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
+  const uploadPhoto = async (): Promise<string> => {
+    if (!photoFile || !user) return photoURL;
+
+    setIsUploading(true);
+    try {
+      // Create a reference to the file in Firebase Storage
+      const fileExtension = photoFile.name.split(".").pop();
+      const fileName = `profile-${Date.now()}.${fileExtension}`;
+      const storageRef = ref(storage, `profile-photos/${user.uid}/${fileName}`); // Specify a non-root path
+
+      // Upload the file
+      await uploadBytes(storageRef, photoFile);
+
+      // Get the download URL
+      const downloadURL = await getDownloadURL(storageRef);
+      console.log("downloadURL", downloadURL);
+      return downloadURL;
+    } catch (error) {
+      console.error("Error uploading photo:", error);
+      throw new Error("Failed to upload photo");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -117,7 +220,10 @@ const ProfilePage = () => {
       return;
     }
 
-    if (displayName === originalName) {
+    const hasNameChanged = displayName !== originalName;
+    const hasPhotoChanged = photoFile !== null;
+
+    if (!hasNameChanged && !hasPhotoChanged && !photoPreview) {
       // No changes made
       router.push("/dashboard");
       return;
@@ -128,16 +234,26 @@ const ProfilePage = () => {
     setUpdateSuccess(false);
 
     try {
+      // Upload photo if changed
+      let updatedPhotoURL = photoURL;
+      if (hasPhotoChanged) {
+        updatedPhotoURL = await uploadPhoto();
+      }
+
       // Update the user document in Firestore
       const userDocRef = doc(database, "users", userDocId);
       await updateDoc(userDocRef, {
         name: displayName,
+        photoURL: updatedPhotoURL,
         lastUpdated: new Date(),
       });
 
       // Update successful
       setUpdateSuccess(true);
       setOriginalName(displayName);
+      setPhotoURL(updatedPhotoURL);
+      setPhotoFile(null);
+      setPhotoPreview(null);
 
       // Redirect after a short delay to show success message
       setTimeout(() => {
@@ -153,11 +269,62 @@ const ProfilePage = () => {
 
   return (
     <div className={styles.profileContainer}>
-      <main className='container py-4'>
+      <main>
         <div className={styles.profileCard}>
           <div className={styles.avatarSection}>
-            <div className={styles.avatar}>
-              <User size={40} />
+            <div className={styles.avatarContainer}>
+              <div className={styles.avatar}>
+                {photoPreview ? (
+                  <Image
+                    src={photoPreview}
+                    alt='Profile preview'
+                    width={100}
+                    height={100}
+                    className={styles.avatarImage}
+                  />
+                ) : photoURL ? (
+                  <Image
+                    src={photoURL}
+                    alt='Profile'
+                    width={100}
+                    height={100}
+                    className={styles.avatarImage}
+                  />
+                ) : (
+                  <User size={40} />
+                )}
+              </div>
+              <div className={styles.avatarActions}>
+                <button
+                  type='button'
+                  onClick={triggerFileInput}
+                  className={styles.avatarButton}
+                  disabled={isUploading}
+                >
+                  <Camera size={16} />
+                  <span>{photoURL || photoPreview ? "Change" : "Upload"}</span>
+                </button>
+                {/* TODO: Remove button doesn't work */}
+                {/* {(photoURL || photoPreview) && (
+                  <button
+                    type='button'
+                    onClick={handleRemovePhoto}
+                    className={`${styles.avatarButton} ${styles.removeButton}`}
+                    disabled={isUploading}
+                  >
+                    <Trash2 size={16} />
+                    <span>Remove</span>
+                  </button>
+                )} */}
+                <input
+                  ref={fileInputRef}
+                  type='file'
+                  accept='image/*'
+                  onChange={handleFileChange}
+                  className={styles.fileInput}
+                />
+              </div>
+              {isUploading && <p className={styles.uploadingText}>Uploading image...</p>}
             </div>
           </div>
 
@@ -180,7 +347,11 @@ const ProfilePage = () => {
             {updateSuccess && <p className={styles.successText}>Profile updated successfully!</p>}
 
             <div className={styles.buttonGroup}>
-              <button type='submit' className={styles.primaryButton} disabled={isUpdating}>
+              <button
+                type='submit'
+                className={styles.primaryButton}
+                disabled={isUpdating || isUploading}
+              >
                 {isUpdating ? "Updating..." : "Save Changes"}
               </button>
               <Link href='/dashboard' className={styles.secondaryButton}>

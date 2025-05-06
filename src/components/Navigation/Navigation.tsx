@@ -4,7 +4,6 @@ import { Menu, Home, ClipboardList, Flag, LogOut, User } from "lucide-react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import styles from "./Navigation.module.css";
 import { getAuth } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
