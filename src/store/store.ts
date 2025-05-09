@@ -50,8 +50,8 @@ export const useCurrentRoundStore = create<CurrentRoundState>()(
       },
     }),
     {
-      name: "currentRoundStore",
-      storage: createJSONStorage(() => sessionStorage),
+      name: "currentRoundStore", // Key for localStorage
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );

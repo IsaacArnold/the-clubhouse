@@ -10,12 +10,24 @@ import Link from "next/link";
 import { GlobeIcon as GolfBall, MapPin, Plus } from "lucide-react";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { useCurrentRoundStore } from "@/store/store";
 
 const MyRounds = () => {
   initFirebase();
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
   const router = useRouter();
+
+  const {
+    currentRoundID,
+    roundDocumentID,
+    courseHoleDetails,
+    userScores,
+    updateRoundID,
+    updateRoundDocID,
+    setCourseHoleDetails,
+    setUserScores,
+  } = useCurrentRoundStore();
 
   const [myRounds, setMyRounds] = useState<DocumentData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,6 +55,15 @@ const MyRounds = () => {
         });
 
         setMyRounds(myRoundsData);
+
+        // Update Zustand store with the latest round data
+        if (myRoundsData.length > 0) {
+          const latestRound = myRoundsData[0];
+          updateRoundID(latestRound.roundID);
+          updateRoundDocID(latestRound.id);
+          setCourseHoleDetails(latestRound.courseHoleDetails || []);
+          setUserScores(latestRound.scores || []);
+        }
       } catch (error) {
         console.error("Error fetching rounds:", error);
       } finally {
