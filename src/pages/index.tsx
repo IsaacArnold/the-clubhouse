@@ -10,6 +10,7 @@ export default function Home() {
         <title>The Clubhouse</title>
         <meta name='description' content='The Clubhouse - Track your golf game' />
         <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />
+        <link rel='icon' href='/golf-cart-icon_96.ico' />
       </Head>
       <main>
         <SignIn />
