@@ -1,5 +1,18 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { saveToDB, getFromDB } from '@/lib/indexedDB';
+
+const indexedDBStorage = {
+  getItem: async (name: string) => {
+    return await getFromDB(name);
+  },
+  setItem: async (name: string, value: any) => {
+    await saveToDB(name, value);
+  },
+  removeItem: async (name: string) => {
+    await saveToDB(name, null);
+  },
+};
 
 interface HoleDetails {
   holeNumber: number;
@@ -46,8 +59,8 @@ export const useCurrentRoundStore = create<CurrentRoundState>()(
       },
     }),
     {
-      name: "currentRoundStore", // Key for localStorage
-      storage: createJSONStorage(() => localStorage),
+      name: "currentRoundStore", // Key for IndexedDB
+      storage: indexedDBStorage,
     }
   )
 );

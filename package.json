@@ -21,6 +21,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^8.5.5",
+    "idb": "^8.0.3",
     "lucide-react": "^0.503.0",
     "moment": "^2.29.4",
     "next": "15.3.1",
