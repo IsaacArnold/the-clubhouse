@@ -37,6 +37,7 @@ const HolePage = () => {
         (s) => s.holeNumber === Number.parseInt(holeNumber as string, 10)
       );
       setScore(existingScore?.score || "");
+      console.log('hole', router.pathname);
     }
   }, [holeNumber, courseHoleDetails, userScores]);
 

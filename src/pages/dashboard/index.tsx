@@ -21,6 +21,7 @@ const Dashboard = () => {
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('dashboard', router.pathname);
     const fetchUserData = async () => {
       if (!user) return;
 

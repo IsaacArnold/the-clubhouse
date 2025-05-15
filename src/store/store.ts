@@ -33,19 +33,15 @@ export const useCurrentRoundStore = create<CurrentRoundState>()(
       courseHoleDetails: [],
       userScores: [],
       updateRoundID: (selectedRoundID) => {
-        console.log("Updating round ID: ", selectedRoundID);
         set({ currentRoundID: selectedRoundID });
       },
       updateRoundDocID: (documentID) => {
-        console.log("Setting the store's documentID for this round");
         set({ roundDocumentID: documentID });
       },
       setCourseHoleDetails: (details) => {
-        console.log("Setting course hole details");
         set({ courseHoleDetails: details });
       },
       setUserScores: (scores) => {
-        console.log("Updating user scores");
         set({ userScores: scores });
       },
     }),
