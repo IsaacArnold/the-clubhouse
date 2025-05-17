@@ -177,6 +177,8 @@ const RoundConfigure = () => {
     }
 
     const collectionRef = collection(database, "rounds");
+    // Create teammateIDs array from teammates
+    const teammateIDs = teammates.map((tm) => tm.userID);
     const newRoundDocRef = await addDoc(collectionRef, {
       roundName,
       courseID,
@@ -187,6 +189,7 @@ const RoundConfigure = () => {
       gameMode,
       teamName,
       teammates,
+      teammateIDs, // <-- Add this field
       teamCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
       scores: [],
     });

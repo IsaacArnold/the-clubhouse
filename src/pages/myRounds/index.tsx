@@ -26,23 +26,43 @@ const MyRounds = () => {
     if (userID) {
       setIsLoading(true);
       try {
-        const q = query(collection(database, "rounds"), where("userID", "==", userID));
-        const querySnapshot = await getDocs(q);
+        // Query for rounds created by the user
+        const userRoundsQuery = query(
+          collection(database, "rounds"),
+          where("userID", "==", userID)
+        );
+        const userRoundsSnapshot = await getDocs(userRoundsQuery);
+        console.log("userRoundsSnapshot", userRoundsSnapshot);
         const myRoundsData: SetStateAction<DocumentData[]> = [];
-        querySnapshot.forEach((doc) => {
-          // Add the document ID to the data for reference
+
+        userRoundsSnapshot.forEach((doc) => {
           myRoundsData.push({ id: doc.id, ...doc.data() });
         });
 
+        // Query for rounds where the user is a teammate
+        const teammateRoundsQuery = query(
+          collection(database, "rounds"),
+          where("teammateIDs", "array-contains", userID)
+        );
+        const teammateRoundsSnapshot = await getDocs(teammateRoundsQuery);
+
+        teammateRoundsSnapshot.forEach((doc) => {
+          myRoundsData.push({ id: doc.id, ...doc.data() });
+        });
+
+        // Remove duplicates by round ID
+        const uniqueRounds = Array.from(
+          new Map(myRoundsData.map((round) => [round.id, round])).values()
+        );
+
         // Sort rounds by date (newest first)
-        myRoundsData.sort((a, b) => {
-          // Assuming roundDate is in DD/MM/YYYY format
+        uniqueRounds.sort((a, b) => {
           const dateA = a.roundDate.split("/").reverse().join("");
           const dateB = b.roundDate.split("/").reverse().join("");
           return dateB.localeCompare(dateA);
         });
 
-        setMyRounds(myRoundsData);
+        setMyRounds(uniqueRounds);
       } catch (error) {
         console.error("Error fetching rounds:", error);
       } finally {
