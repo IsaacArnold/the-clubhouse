@@ -15,7 +15,7 @@ import { database, initFirebase } from "firebaseConfig";
 import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { type ChangeEvent, type SetStateAction, useEffect, useState } from "react";
+import { type ChangeEvent, type SetStateAction, useEffect, useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { v4 as uuidv4 } from "uuid";
 import styles from "./ConfigureRound.module.css";
@@ -40,11 +40,15 @@ const RoundConfigure = () => {
   const [teammates, setTeammates] = useState<{ userID: string; name: string }[]>([]);
   const [teamCount, setTeamCount] = useState<number>(1);
   const [searchResults, setSearchResults] = useState<{ userID: string; name: string }[]>([]);
+  const [teammateInputs, setTeammateInputs] = useState<string[]>([]);
+  const [teammateErrors, setTeammateErrors] = useState<string[]>([]);
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const { updateRoundID, updateRoundDocID, setCourseHoleDetails, setUserScores } =
     useCurrentRoundStore();
   const { updateSelectedCourseID } = useSelectedCourseIDStore();
 
   const router = useRouter();
+  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Set default date to today
@@ -72,29 +76,81 @@ const RoundConfigure = () => {
   const handleTeamCountChange = (e: ChangeEvent<HTMLInputElement>) => {
     const count = Math.min(3, Math.max(1, parseInt(e.target.value, 10)));
     setTeamCount(count);
-    setTeammates(teammates.slice(0, count)); // Adjust teammates array
+    setTeammates((prev) => prev.slice(0, count));
+    setTeammateInputs((prev) => prev.slice(0, count));
+    setTeammateErrors((prev) => prev.slice(0, count));
   };
 
-  const handleSearchUsers = async (searchTerm: string) => {
-    const usersRef = collection(database, "users");
-    const q = query(
-      usersRef,
-      where("displayName", ">=", searchTerm),
-      where("displayName", "<=", searchTerm + "\uf8ff")
-    );
-    const querySnapshot = await getDocs(q);
-    setSearchResults(
-      querySnapshot.docs.map((doc) => {
+  const handleSearchUsers = (searchTerm: string, index: number) => {
+    setTeammateInputs((prev) => {
+      const updated = [...prev];
+      updated[index] = searchTerm;
+      return updated;
+    });
+    setActiveDropdown(index); // Only show dropdown for the active input
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    if (!searchTerm) {
+      setSearchResults([]);
+      setTeammateErrors((prev) => {
+        const updated = [...prev];
+        updated[index] = '';
+        return updated;
+      });
+      return;
+    }
+    searchTimeout.current = setTimeout(async () => {
+      const usersRef = collection(database, "users");
+      const q = query(
+        usersRef,
+        where("displayName", ">=", searchTerm),
+        where("displayName", "<=", searchTerm + "\uf8ff")
+      );
+      const querySnapshot = await getDocs(q);
+      const results = querySnapshot.docs.map((doc) => {
         const data = doc.data();
         return { userID: data.id, name: data.displayName };
-      })
-    );
+      });
+      setSearchResults(results);
+      setTeammateErrors((prev) => {
+        const updated = [...prev];
+        updated[index] = results.length === 0 ? 'No users found' : '';
+        return updated;
+      });
+    }, 400);
   };
 
   const handleAddTeammate = (index: number, user: { userID: string; name: string }) => {
     const updatedTeammates = [...teammates];
     updatedTeammates[index] = user;
     setTeammates(updatedTeammates);
+    setTeammateInputs((prev) => {
+      const updated = [...prev];
+      updated[index] = user.name;
+      return updated;
+    });
+    setSearchResults([]);
+    setActiveDropdown(null);
+    setTeammateErrors((prev) => {
+      const updated = [...prev];
+      updated[index] = '';
+      return updated;
+    });
+  };
+
+  const handleRemoveTeammate = (index: number) => {
+    const updatedTeammates = [...teammates];
+    updatedTeammates.splice(index, 1);
+    setTeammates(updatedTeammates);
+    setTeammateInputs((prev) => {
+      const updated = [...prev];
+      updated.splice(index, 1);
+      return updated;
+    });
+    setTeammateErrors((prev) => {
+      const updated = [...prev];
+      updated.splice(index, 1);
+      return updated;
+    });
   };
 
   if (loading) {
@@ -280,9 +336,9 @@ const RoundConfigure = () => {
                   onChange={(e) => {
                     getAndSetSelectedCourseNameAndID(e);
                   }}
-                  value={courseID.toString()}
+                  value={courseID || ''} // Use value prop instead of selected on option
                 >
-                  <option value='' disabled selected>
+                  <option value='' disabled>
                     Choose a golf course
                   </option>
                   {courseNames.map((course) => (
@@ -327,29 +383,111 @@ const RoundConfigure = () => {
                     />
                   </div>
 
+                  {/* Team Members Section */}
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Team Members</label>
+                    <ul style={{
+                      listStyle: "none",
+                      padding: 0,
+                      margin: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 8
+                    }}>
+                      {teammates.map((member, idx) => (
+                        member && member.userID ? (
+                          <li key={member.userID} style={{
+                            display: "flex",
+                            alignItems: "center",
+                            background: "#f6f8fa",
+                            borderRadius: 6,
+                            padding: "6px 12px",
+                            marginBottom: 2,
+                            fontSize: 15
+                          }}>
+                            <span style={{ flex: 1 }}>{member.name}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveTeammate(idx)}
+                              style={{
+                                background: "none",
+                                border: "none",
+                                color: "#d32f2f",
+                                fontWeight: 700,
+                                fontSize: 18,
+                                cursor: "pointer",
+                                marginLeft: 8
+                              }}
+                              aria-label={`Remove ${member.name}`}
+                            >
+                              ×
+                            </button>
+                          </li>
+                        ) : null
+                      ))}
+                    </ul>
+                  </div>
+
                   {Array.from({ length: teamCount }).map((_, index) => (
-                    <div key={index} className={styles.formGroup}>
+                    <div key={index} className={styles.formGroup} style={{ position: "relative" }}>
                       <label htmlFor={`teammate-${index}`} className={styles.formLabel}>
-                        Teammate {index + 1}
+                        Team member {index + 1}
                       </label>
                       <input
                         id={`teammate-${index}`}
-                        type='text'
-                        className={styles.formInput}
-                        placeholder='Search for a user'
-                        onChange={(e) => handleSearchUsers(e.target.value)}
+                        type="text"
+                        className={
+                          styles.formInput + (teammateErrors[index] ? ' ' + styles.formInputError : '')
+                        }
+                        placeholder="Search for a user"
+                        onChange={(e) => handleSearchUsers(e.target.value, index)}
+                        autoComplete="off"
+                        value={teammateInputs[index] || ""}
+                        onFocus={() => setActiveDropdown(index)}
+                        onBlur={() => setTimeout(() => setActiveDropdown(null), 200)}
                       />
-                      <ul className={styles.searchResults}>
-                        {searchResults.map((user) => (
-                          <li
-                            key={user.userID}
-                            onClick={() => handleAddTeammate(index, user)}
-                            className={styles.searchResultItem}
-                          >
-                            {user.name}
-                          </li>
-                        ))}
-                      </ul>
+                      {teammateErrors[index] && (
+                        <p className={styles.errorText} style={{ color: '#d32f2f', marginTop: 2 }}>{teammateErrors[index]}</p>
+                      )}
+                      {activeDropdown === index && searchResults.length > 0 && (
+                        <ul className={styles.searchResults} style={{
+                          position: "absolute",
+                          top: "100%",
+                          left: 0,
+                          right: 0,
+                          background: "#fff",
+                          border: "1px solid #ccc",
+                          borderRadius: 6,
+                          zIndex: 10,
+                          maxHeight: 180,
+                          overflowY: "auto",
+                          margin: 0,
+                          padding: 0,
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
+                        }}>
+                          {searchResults.map((user) => (
+                            <li
+                              key={user.userID}
+                              onClick={() => handleAddTeammate(index, user)}
+                              className={styles.searchResultItem}
+                              style={{
+                                padding: "10px 16px",
+                                cursor: "pointer",
+                                borderBottom: "1px solid #eee",
+                                transition: "background 0.2s",
+                                background: teammates[index]?.userID === user.userID ? "#e6f7ff" : "#fff"
+                              }}
+                              onMouseDown={e => e.preventDefault()}
+                            >
+                              <span style={{ fontWeight: 500 }}>{user.name}</span>
+                              <span style={{ color: "#888", fontSize: 12, marginLeft: 8 }}>{user.userID}</span>
+                              {teammates[index]?.userID === user.userID && (
+                                <span style={{ float: "right", color: "#1890ff", fontWeight: 600 }}>&#10003;</span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   ))}
 

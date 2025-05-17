@@ -32,7 +32,6 @@ const MyRounds = () => {
           where("userID", "==", userID)
         );
         const userRoundsSnapshot = await getDocs(userRoundsQuery);
-        console.log("userRoundsSnapshot", userRoundsSnapshot);
         const myRoundsData: SetStateAction<DocumentData[]> = [];
 
         userRoundsSnapshot.forEach((doc) => {
