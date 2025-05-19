@@ -21,6 +21,7 @@ import { v4 as uuidv4 } from "uuid";
 import styles from "./ConfigureRound.module.css";
 import { Calendar, Flag, GlobeIcon as GolfBall } from "lucide-react";
 import Head from "next/head";
+import { GameModes } from "@/types/gameModes";
 
 const RoundConfigure = () => {
   initFirebase();
@@ -35,7 +36,7 @@ const RoundConfigure = () => {
   const [dateInputValue, setDateInputValue] = useState<string>("");
   const [courseError, setCourseError] = useState<string>("");
   const [roundNameError, setRoundNameError] = useState<string>("");
-  const [gameMode, setGameMode] = useState<string>("");
+  const [gameMode, setGameMode] = useState<GameModes>(GameModes.StrokePlay);
   const [teamName, setTeamName] = useState<string>("");
   const [teammates, setTeammates] = useState<{ userID: string; name: string }[]>([]);
   const [teamCount, setTeamCount] = useState<number>(1);
@@ -93,7 +94,7 @@ const RoundConfigure = () => {
       setSearchResults([]);
       setTeammateErrors((prev) => {
         const updated = [...prev];
-        updated[index] = '';
+        updated[index] = "";
         return updated;
       });
       return;
@@ -113,7 +114,7 @@ const RoundConfigure = () => {
       setSearchResults(results);
       setTeammateErrors((prev) => {
         const updated = [...prev];
-        updated[index] = results.length === 0 ? 'No users found' : '';
+        updated[index] = results.length === 0 ? "No users found" : "";
         return updated;
       });
     }, 400);
@@ -132,7 +133,7 @@ const RoundConfigure = () => {
     setActiveDropdown(null);
     setTeammateErrors((prev) => {
       const updated = [...prev];
-      updated[index] = '';
+      updated[index] = "";
       return updated;
     });
   };
@@ -336,7 +337,7 @@ const RoundConfigure = () => {
                   onChange={(e) => {
                     getAndSetSelectedCourseNameAndID(e);
                   }}
-                  value={courseID || ''} // Use value prop instead of selected on option
+                  value={courseID || ""} // Use value prop instead of selected on option
                 >
                   <option value='' disabled>
                     Choose a golf course
@@ -386,28 +387,33 @@ const RoundConfigure = () => {
                   {/* Team Members Section */}
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Team Members</label>
-                    <ul style={{
-                      listStyle: "none",
-                      padding: 0,
-                      margin: 0,
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 8
-                    }}>
-                      {teammates.map((member, idx) => (
+                    <ul
+                      style={{
+                        listStyle: "none",
+                        padding: 0,
+                        margin: 0,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 8,
+                      }}
+                    >
+                      {teammates.map((member, idx) =>
                         member && member.userID ? (
-                          <li key={member.userID} style={{
-                            display: "flex",
-                            alignItems: "center",
-                            background: "#f6f8fa",
-                            borderRadius: 6,
-                            padding: "6px 12px",
-                            marginBottom: 2,
-                            fontSize: 15
-                          }}>
+                          <li
+                            key={member.userID}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              background: "#f6f8fa",
+                              borderRadius: 6,
+                              padding: "6px 12px",
+                              marginBottom: 2,
+                              fontSize: 15,
+                            }}
+                          >
                             <span style={{ flex: 1 }}>{member.name}</span>
                             <button
-                              type="button"
+                              type='button'
                               onClick={() => handleRemoveTeammate(idx)}
                               style={{
                                 background: "none",
@@ -416,7 +422,7 @@ const RoundConfigure = () => {
                                 fontWeight: 700,
                                 fontSize: 18,
                                 cursor: "pointer",
-                                marginLeft: 8
+                                marginLeft: 8,
                               }}
                               aria-label={`Remove ${member.name}`}
                             >
@@ -424,7 +430,7 @@ const RoundConfigure = () => {
                             </button>
                           </li>
                         ) : null
-                      ))}
+                      )}
                     </ul>
                   </div>
 
@@ -435,36 +441,42 @@ const RoundConfigure = () => {
                       </label>
                       <input
                         id={`teammate-${index}`}
-                        type="text"
+                        type='text'
                         className={
-                          styles.formInput + (teammateErrors[index] ? ' ' + styles.formInputError : '')
+                          styles.formInput +
+                          (teammateErrors[index] ? " " + styles.formInputError : "")
                         }
-                        placeholder="Search for a user"
+                        placeholder='Search for a user'
                         onChange={(e) => handleSearchUsers(e.target.value, index)}
-                        autoComplete="off"
+                        autoComplete='off'
                         value={teammateInputs[index] || ""}
                         onFocus={() => setActiveDropdown(index)}
                         onBlur={() => setTimeout(() => setActiveDropdown(null), 200)}
                       />
                       {teammateErrors[index] && (
-                        <p className={styles.errorText} style={{ color: '#d32f2f', marginTop: 2 }}>{teammateErrors[index]}</p>
+                        <p className={styles.errorText} style={{ color: "#d32f2f", marginTop: 2 }}>
+                          {teammateErrors[index]}
+                        </p>
                       )}
                       {activeDropdown === index && searchResults.length > 0 && (
-                        <ul className={styles.searchResults} style={{
-                          position: "absolute",
-                          top: "100%",
-                          left: 0,
-                          right: 0,
-                          background: "#fff",
-                          border: "1px solid #ccc",
-                          borderRadius: 6,
-                          zIndex: 10,
-                          maxHeight: 180,
-                          overflowY: "auto",
-                          margin: 0,
-                          padding: 0,
-                          boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
-                        }}>
+                        <ul
+                          className={styles.searchResults}
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: 0,
+                            right: 0,
+                            background: "#fff",
+                            border: "1px solid #ccc",
+                            borderRadius: 6,
+                            zIndex: 10,
+                            maxHeight: 180,
+                            overflowY: "auto",
+                            margin: 0,
+                            padding: 0,
+                            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                          }}
+                        >
                           {searchResults.map((user) => (
                             <li
                               key={user.userID}
@@ -475,14 +487,19 @@ const RoundConfigure = () => {
                                 cursor: "pointer",
                                 borderBottom: "1px solid #eee",
                                 transition: "background 0.2s",
-                                background: teammates[index]?.userID === user.userID ? "#e6f7ff" : "#fff"
+                                background:
+                                  teammates[index]?.userID === user.userID ? "#e6f7ff" : "#fff",
                               }}
-                              onMouseDown={e => e.preventDefault()}
+                              onMouseDown={(e) => e.preventDefault()}
                             >
                               <span style={{ fontWeight: 500 }}>{user.name}</span>
-                              <span style={{ color: "#888", fontSize: 12, marginLeft: 8 }}>{user.userID}</span>
+                              <span style={{ color: "#888", fontSize: 12, marginLeft: 8 }}>
+                                {user.userID}
+                              </span>
                               {teammates[index]?.userID === user.userID && (
-                                <span style={{ float: "right", color: "#1890ff", fontWeight: 600 }}>&#10003;</span>
+                                <span style={{ float: "right", color: "#1890ff", fontWeight: 600 }}>
+                                  &#10003;
+                                </span>
                               )}
                             </li>
                           ))}

@@ -27,6 +27,7 @@ const Scorecard = () => {
   const [totalDistance, setTotalDistance] = useState<number>(0);
   const [userScores, setUserScores] = useState<UserScore[]>([]);
   const [date, setDate] = useState<string>(new Date().toLocaleDateString());
+  const [teamMembers, setTeamMembers] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const {
@@ -53,6 +54,7 @@ const Scorecard = () => {
 
         if (docSnap.exists()) {
           const roundData = docSnap.data();
+          console.log("roundData", roundData);
 
           // Update the Zustand store with the current round's document ID
           updateRoundDocID(roundId as string);
@@ -79,6 +81,10 @@ const Scorecard = () => {
             setDate(roundData.date);
           } else if (roundData.roundDate) {
             setDate(roundData.roundDate);
+          }
+
+          if (roundData.teammates) {
+            setTeamMembers(roundData.teammates);
           }
 
           // Fetch course details using the courseID from the round
@@ -330,10 +336,20 @@ const Scorecard = () => {
                 <p className={styles.detailLabel}>Course Par</p>
                 <p className={styles.detailValue}>{coursePar}</p>
               </div>
-              <div className={styles.detailsGridContainer}>
-                <p className={styles.detailLabel}>Course Distance</p>
-                <p className={styles.detailValue}>{totalDistance}m</p>
-              </div>
+              {teamMembers && teamMembers.length > 0 && (
+                <div className={styles.detailsGridContainer}>
+                  <p className={styles.detailLabel}>Team Members</p>
+                  <p className={styles.detailValue}>
+                    {teamMembers
+                      .map((person: any) =>
+                        person && typeof person === "object" && "name" in person
+                          ? person.name
+                          : String(person)
+                      )
+                      .join(", ")}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -342,7 +358,7 @@ const Scorecard = () => {
           <div className={styles.cardHeader}>
             <div className='flex items-center justify-between'>
               <h3 className={styles.cardTitle}>Round Summary</h3>
-              <span className='font-bold'>Total: {stats.totalScore}</span>
+              <span className='font-bold'>My Score: {stats.totalScore}</span>
             </div>
           </div>
           <div className={styles.cardContent}>
