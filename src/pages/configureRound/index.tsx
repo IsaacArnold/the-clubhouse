@@ -272,7 +272,7 @@ const RoundConfigure = () => {
                   }}
                   value={courseID.toString()}
                 >
-                  <option value='' disabled selected>
+                  <option value='' disabled>
                     Choose a golf course
                   </option>
                   {courseNames.map((course) => (
