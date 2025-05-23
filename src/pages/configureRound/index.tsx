@@ -35,6 +35,8 @@ const RoundConfigure = () => {
   const [dateInputValue, setDateInputValue] = useState<string>("");
   const [courseError, setCourseError] = useState<string>("");
   const [roundNameError, setRoundNameError] = useState<string>("");
+  const [selectedTeeColour, setSelectedTeeColour] = useState<string>("");
+  const [availableTeeColours, setAvailableTeeColours] = useState<string[]>([]);
   const { updateRoundID, updateRoundDocID, setCourseHoleDetails, setUserScores } =
     useCurrentRoundStore();
   const { updateSelectedCourseID } = useSelectedCourseIDStore();
@@ -135,6 +137,11 @@ const RoundConfigure = () => {
       hasError = true;
     }
 
+    if (!selectedTeeColour) {
+      hasError = true;
+      // Optionally, set an error state for tee colour
+      // setTeeColourError("Please select a tee colour");
+    }
     if (hasError) {
       return;
     }
@@ -148,6 +155,7 @@ const RoundConfigure = () => {
       userID: user.uid,
       roundID: uuidv4(),
       scores: [],
+      selectedTeeColour,
     });
 
     const currentRoundDocRef = getDoc(newRoundDocRef);
@@ -170,7 +178,15 @@ const RoundConfigure = () => {
     const courseQuery = query(collection(database, "courses"), where("courseID", "==", courseID));
     const courseSnapshot = await getDocs(courseQuery);
     const courseData = courseSnapshot.docs[0]?.data();
-    setCourseHoleDetails(courseData.holeDetails);
+    // Find the selected tee's holes
+    let holeDetails = [];
+    if (courseData && courseData.holeDetails && courseData.holeDetails.tees && courseData.holeDetails.tees.male) {
+      const selectedTee = courseData.holeDetails.tees.male.find((tee: any) => tee["tee-name"] === selectedTeeColour);
+      if (selectedTee) {
+        holeDetails = selectedTee.holes;
+      }
+    }
+    setCourseHoleDetails(holeDetails);
 
     setRoundName("");
     router.push(`/hole/1`);
@@ -191,6 +207,7 @@ const RoundConfigure = () => {
       Finds the repsective courseName based off the selected option and stores it in localState which then adds it to the round document. This is so we can read it in the My Rounds component.
     */
     const selectedCourse = courseNames.find((course) => course.courseID === element.target.value);
+    console.log('Selected course data:', selectedCourse); // Debug log
 
     // Set the courseID in the global store so that we can access it from the individual hole scoring page at: /hole/[holeNumber]
     const selectedCourseID = selectedCourse?.courseID;
@@ -198,6 +215,15 @@ const RoundConfigure = () => {
 
     const selectedCourseName = selectedCourse?.courseName;
     setSelectedCourseName(selectedCourseName);
+
+    // Extract available tee colours from the selected course
+    if (selectedCourse && selectedCourse.holeDetails && selectedCourse.holeDetails.tees && selectedCourse.holeDetails.tees.male) {
+      setAvailableTeeColours(selectedCourse.holeDetails.tees.male.map((tee: any) => tee["tee-name"]));
+      setSelectedTeeColour(""); // Reset tee colour selection
+    } else {
+      setAvailableTeeColours([]);
+      setSelectedTeeColour("");
+    }
   };
 
   const handleRoundNameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -215,6 +241,10 @@ const RoundConfigure = () => {
       const formattedDate = moment(htmlDate).format("DD/MM/YYYY");
       setRoundDate(formattedDate);
     }
+  };
+
+  const handleTeeColourChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedTeeColour(e.target.value);
   };
 
   return (
@@ -253,6 +283,30 @@ const RoundConfigure = () => {
                 </select>
                 {courseError && <p className={styles.errorText}>{courseError}</p>}
               </div>
+
+              {/* Tee colour selection */}
+              {availableTeeColours.length > 0 && (
+                <div className={styles.formGroup}>
+                  <label htmlFor='teeColourSelect' className={styles.formLabel}>
+                    Select Tee Colour
+                  </label>
+                  <select
+                    id='teeColourSelect'
+                    className={styles.formSelect}
+                    value={selectedTeeColour}
+                    onChange={handleTeeColourChange}
+                  >
+                    <option value='' disabled>
+                      Choose a tee colour
+                    </option>
+                    {availableTeeColours.map((colour) => (
+                      <option value={colour} key={colour}>
+                        {colour.charAt(0).toUpperCase() + colour.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div className={styles.formGroup}>
                 <label htmlFor='roundName' className={styles.formLabel}>

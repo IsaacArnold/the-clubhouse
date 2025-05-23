@@ -92,20 +92,29 @@ const Scorecard = () => {
             if (!courseSnapshot.empty) {
               const courseData = courseSnapshot.docs[0].data();
 
-              // Update the course hole details in the store
-              if (courseData.holeDetails && Array.isArray(courseData.holeDetails)) {
-                setCourseHoleDetails(courseData.holeDetails);
-
-                // Calculate coursePar and totalDistance from courseHoleDetails
-                const par = courseData.holeDetails.reduce((sum, hole) => sum + hole.holePar, 0);
-                const distance = courseData.holeDetails.reduce(
-                  (sum, hole) => sum + hole.holeDistance,
-                  0
+              // Get the selected tee colour from the round document
+              const selectedTeeColour = roundData.selectedTeeColour;
+              let holeDetails = [];
+              if (
+                selectedTeeColour &&
+                courseData.holeDetails &&
+                courseData.holeDetails.tees &&
+                courseData.holeDetails.tees.male
+              ) {
+                const selectedTee = courseData.holeDetails.tees.male.find(
+                  (tee: any) => tee["tee-name"] === selectedTeeColour
                 );
-
-                setCoursePar(par);
-                setTotalDistance(distance);
+                if (selectedTee) {
+                  holeDetails = selectedTee.holes;
+                }
               }
+              setCourseHoleDetails(holeDetails);
+
+              // Calculate coursePar and totalDistance from holeDetails
+              const par = holeDetails.reduce((sum: number, hole: any) => sum + hole.holePar, 0);
+              const distance = holeDetails.reduce((sum: number, hole: any) => sum + hole.holeDistance, 0);
+              setCoursePar(par);
+              setTotalDistance(distance);
             }
           }
         } else {
